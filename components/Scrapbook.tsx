@@ -10,10 +10,13 @@ import ScratchCard from "./pages/ScratchCard";
 import PhotoBooth from "./pages/PhotoBooth";
 import ValentinePage from "./pages/ValentinePage";
 import GameSelect from "./pages/GameSelect";
-import PageFooter from "./ui/PageFooter";
 import LoadingScreen from "./LoadingScreen";
 import CursorTrail from "./effects/CursorTrail";
+import MusicPlayer from "./MusicPlayer";
 import { playPageFlip } from "@/utils/sounds";
+
+// localStorage key for persisting current page
+const CURRENT_PAGE_KEY = "scrapbook_current_page";
 
 // Images to preload for smooth experience
 const imagesToPreload = [
@@ -24,14 +27,14 @@ const imagesToPreload = [
 ];
 
 const pages = [
-  { component: CoverPage, showFooter: false, name: "Cover" },
-  { component: SignatureBakes, showFooter: true, name: "Signature Bakes" },
-  { component: ThingsILove, showFooter: true, name: "Things I Love" },
-  { component: FutureRecipes, showFooter: true, name: "Future Recipes" },
-  { component: ScratchCard, showFooter: false, name: "Scratch Card" },
-  { component: PhotoBooth, showFooter: false, name: "Photo Booth" },
-  { component: ValentinePage, showFooter: false, name: "Valentine" },
-  { component: GameSelect, showFooter: false, name: "Games" },
+  { component: CoverPage, name: "Cover" },
+  { component: SignatureBakes, name: "Signature Bakes" },
+  { component: ThingsILove, name: "Things I Love" },
+  { component: FutureRecipes, name: "Future Recipes" },
+  { component: ScratchCard, name: "Scratch Card" },
+  { component: PhotoBooth, name: "Photo Booth" },
+  { component: ValentinePage, name: "Valentine" },
+  { component: GameSelect, name: "Games" },
 ];
 
 // Modern slide transition - smooth horizontal movement with gentle fade
@@ -60,6 +63,26 @@ export default function Scrapbook() {
   const [currentPage, setCurrentPage] = useState(0);
   const [direction, setDirection] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Load saved page from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedPage = localStorage.getItem(CURRENT_PAGE_KEY);
+      if (savedPage !== null) {
+        const pageIndex = parseInt(savedPage, 10);
+        if (!isNaN(pageIndex) && pageIndex >= 0 && pageIndex < pages.length) {
+          setCurrentPage(pageIndex);
+        }
+      }
+    }
+  }, []);
+
+  // Save current page to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(CURRENT_PAGE_KEY, currentPage.toString());
+    }
+  }, [currentPage]);
 
   const goToPage = useCallback((pageIndex: number) => {
     if (pageIndex === currentPage) return;
@@ -132,7 +155,6 @@ export default function Scrapbook() {
   }, []);
 
   const CurrentPageComponent = pages[currentPage].component;
-  const showFooter = pages[currentPage].showFooter;
 
   // Show loading screen
   if (isLoading) {
@@ -148,6 +170,9 @@ export default function Scrapbook() {
     <div className="relative min-h-dvh w-full overflow-hidden bg-cream flour-pattern">
       {/* Cursor trail effect */}
       <CursorTrail />
+      
+      {/* Background music player */}
+      <MusicPlayer />
 
       {/* Navigation Arrows - optimized for mobile touch */}
       {currentPage > 0 && (
@@ -241,13 +266,6 @@ export default function Scrapbook() {
           className="min-h-dvh w-full"
         >
           <CurrentPageComponent onNext={nextPage} onPrev={prevPage} />
-          
-          {showFooter && (
-            <PageFooter 
-              currentPage={currentPage} 
-              totalPages={pages.length - 1} 
-            />
-          )}
         </motion.div>
       </AnimatePresence>
     </div>
