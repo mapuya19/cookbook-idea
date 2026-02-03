@@ -69,7 +69,6 @@ export default function SignatureBakes({ onNext }: SignatureBakesProps) {
               key={bake.title}
               title={bake.title}
               caption={bake.caption}
-              expandedCaption={bake.expandedCaption}
               placeholder={bake.placeholder}
               rotation={bake.rotation}
               delay={0.2 + index * 0.15}
