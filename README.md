@@ -43,6 +43,7 @@ Follow the prompts to deploy.
 ## Features
 
 - 📖 6-page digital scrapbook with smooth slide transitions
+- 🎬 Animated intro with flying ingredients and mixing bowl
 - 🍪 Signature bakes gallery with Polaroid-style photos
 - 💝 "Things I Love About You" sticky notes
 - ✅ Interactive future recipes checklist
