@@ -80,8 +80,9 @@ export default function FutureRecipes({ onNext }: FutureRecipesProps) {
           animate={{ opacity: 0.15, rotate: 0 }}
           transition={{ delay: 1.2 }}
           className="absolute top-16 right-4 hidden lg:block"
+          aria-hidden="true"
         >
-          <svg width="100" height="100" viewBox="0 0 100 100" className="text-blush">
+          <svg width="100" height="100" viewBox="0 0 100 100" className="text-blush" aria-hidden="true">
             {/* Mixing bowl */}
             <ellipse cx="50" cy="70" rx="40" ry="20" fill="currentColor" />
             <ellipse cx="50" cy="65" rx="35" ry="15" fill="#FDF6E3" />
@@ -96,8 +97,9 @@ export default function FutureRecipes({ onNext }: FutureRecipesProps) {
           animate={{ opacity: 0.1 }}
           transition={{ delay: 1.4 }}
           className="absolute bottom-32 left-4 hidden lg:block"
+          aria-hidden="true"
         >
-          <svg width="60" height="60" viewBox="0 0 60 60" className="text-sage">
+          <svg width="60" height="60" viewBox="0 0 60 60" className="text-sage" aria-hidden="true">
             {/* Rolling pin */}
             <rect x="5" y="25" width="50" height="10" rx="5" fill="currentColor" />
             <rect x="0" y="27" width="8" height="6" rx="3" fill="currentColor" />
@@ -114,7 +116,7 @@ export default function FutureRecipes({ onNext }: FutureRecipesProps) {
         >
           <button
             onClick={onNext}
-            className="font-handwritten text-lg text-brown-light/60 hover:text-blush transition-colors flex items-center gap-2 mx-auto group"
+            className="font-handwritten text-lg text-brown-light/60 hover:text-blush transition-colors flex items-center gap-2 mx-auto group focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2 rounded-lg px-2 py-1"
           >
             one more thing...
             <svg
@@ -122,6 +124,7 @@ export default function FutureRecipes({ onNext }: FutureRecipesProps) {
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>

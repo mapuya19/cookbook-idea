@@ -84,8 +84,9 @@ export default function SignatureBakes({ onNext }: SignatureBakesProps) {
           animate={{ opacity: 1 }}
           transition={{ delay: 1, duration: 0.6 }}
           className="absolute top-20 right-8 hidden lg:block"
+          aria-hidden="true"
         >
-          <svg width="60" height="60" viewBox="0 0 60 60" className="text-blush/30">
+          <svg width="60" height="60" viewBox="0 0 60 60" className="text-blush/30" aria-hidden="true">
             <path
               d="M30 55C30 55 5 35 5 20C5 10 12 3 22 3C27 3 30 8 30 8C30 8 33 3 38 3C48 3 55 10 55 20C55 35 30 55 30 55Z"
               fill="currentColor"
@@ -98,8 +99,9 @@ export default function SignatureBakes({ onNext }: SignatureBakesProps) {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2, duration: 0.6 }}
           className="absolute bottom-32 left-8 hidden lg:block"
+          aria-hidden="true"
         >
-          <svg width="50" height="50" viewBox="0 0 50 50" className="text-sage/40">
+          <svg width="50" height="50" viewBox="0 0 50 50" className="text-sage/40" aria-hidden="true">
             <circle cx="25" cy="25" r="20" fill="currentColor" />
             <circle cx="18" cy="20" r="4" fill="#5D4037" opacity="0.5" />
             <circle cx="32" cy="22" r="3" fill="#5D4037" opacity="0.5" />
@@ -116,7 +118,7 @@ export default function SignatureBakes({ onNext }: SignatureBakesProps) {
         >
           <button
             onClick={onNext}
-            className="font-handwritten text-lg text-brown-light/60 hover:text-blush transition-colors flex items-center gap-2 mx-auto group"
+            className="font-handwritten text-lg text-brown-light/60 hover:text-blush transition-colors flex items-center gap-2 mx-auto group focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2 rounded-lg px-2 py-1"
           >
             keep flipping
             <svg
@@ -124,6 +126,7 @@ export default function SignatureBakes({ onNext }: SignatureBakesProps) {
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>

@@ -77,7 +77,7 @@ export default function Scrapbook() {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
           onClick={prevPage}
-          className="fixed left-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-warm-white/80 backdrop-blur-sm shadow-lg hover:bg-white hover:scale-110 transition-all duration-300 group"
+          className="fixed left-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-warm-white/80 backdrop-blur-sm shadow-lg hover:bg-white hover:scale-110 transition-all duration-300 group focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2"
           aria-label="Previous page"
         >
           <svg
@@ -85,6 +85,7 @@ export default function Scrapbook() {
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
@@ -102,7 +103,7 @@ export default function Scrapbook() {
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: 20 }}
           onClick={nextPage}
-          className="fixed right-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-warm-white/80 backdrop-blur-sm shadow-lg hover:bg-white hover:scale-110 transition-all duration-300 group"
+          className="fixed right-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-warm-white/80 backdrop-blur-sm shadow-lg hover:bg-white hover:scale-110 transition-all duration-300 group focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2"
           aria-label="Next page"
         >
           <svg
@@ -110,6 +111,7 @@ export default function Scrapbook() {
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
@@ -123,24 +125,30 @@ export default function Scrapbook() {
 
       {/* Page Dots Navigation */}
       {currentPage > 0 && (
-        <motion.div
+        <motion.nav
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex gap-2"
+          aria-label="Scrapbook pages"
+          role="navigation"
         >
-          {pages.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToPage(index)}
-              className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                index === currentPage
-                  ? "bg-blush scale-125"
-                  : "bg-brown-light/30 hover:bg-brown-light/50"
-              }`}
-              aria-label={`Go to page ${index + 1}`}
-            />
-          ))}
-        </motion.div>
+          {pages.map((_, index) => {
+            const pageNames = ["Cover", "Signature Bakes", "Things I Love", "Future Recipes", "Valentine"];
+            return (
+              <button
+                key={index}
+                onClick={() => goToPage(index)}
+                className={`w-2.5 h-2.5 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2 ${
+                  index === currentPage
+                    ? "bg-blush scale-125"
+                    : "bg-brown-light/30 hover:bg-brown-light/50"
+                }`}
+                aria-label={`Go to ${pageNames[index]} page${index === currentPage ? " (current)" : ""}`}
+                aria-current={index === currentPage ? "page" : undefined}
+              />
+            );
+          })}
+        </motion.nav>
       )}
 
       {/* Page Content */}

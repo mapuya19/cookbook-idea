@@ -115,8 +115,9 @@ export default function ThingsILove({ onNext }: ThingsILoveProps) {
           animate={{ opacity: 0.3, scale: 1 }}
           transition={{ delay: 1.2, duration: 0.5 }}
           className="absolute top-32 right-4 hidden lg:block"
+          aria-hidden="true"
         >
-          <svg width="40" height="40" viewBox="0 0 40 40" className="text-blush">
+          <svg width="40" height="40" viewBox="0 0 40 40" className="text-blush" aria-hidden="true">
             <path
               d="M20 36C20 36 4 24 4 14C4 8 8 4 14 4C17 4 20 7 20 7C20 7 23 4 26 4C32 4 36 8 36 14C36 24 20 36 20 36Z"
               fill="currentColor"
@@ -129,8 +130,9 @@ export default function ThingsILove({ onNext }: ThingsILoveProps) {
           animate={{ opacity: 0.2, scale: 1 }}
           transition={{ delay: 1.4, duration: 0.5 }}
           className="absolute bottom-40 left-4 hidden lg:block"
+          aria-hidden="true"
         >
-          <svg width="30" height="30" viewBox="0 0 30 30" className="text-sage">
+          <svg width="30" height="30" viewBox="0 0 30 30" className="text-sage" aria-hidden="true">
             <path
               d="M15 27C15 27 3 18 3 10.5C3 6 6 3 10.5 3C12.75 3 15 5.25 15 5.25C15 5.25 17.25 3 19.5 3C24 3 27 6 27 10.5C27 18 15 27 15 27Z"
               fill="currentColor"
@@ -147,7 +149,7 @@ export default function ThingsILove({ onNext }: ThingsILoveProps) {
         >
           <button
             onClick={onNext}
-            className="font-handwritten text-lg text-brown-light/60 hover:text-blush transition-colors flex items-center gap-2 mx-auto group"
+            className="font-handwritten text-lg text-brown-light/60 hover:text-blush transition-colors flex items-center gap-2 mx-auto group focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2 rounded-lg px-2 py-1"
           >
             there&apos;s more
             <svg
@@ -155,6 +157,7 @@ export default function ThingsILove({ onNext }: ThingsILoveProps) {
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>

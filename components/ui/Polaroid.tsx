@@ -120,6 +120,13 @@ export default function Polaroid({
 
   const showImage = imageSrc && !imageError;
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      setIsExpanded(!isExpanded);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30, rotate: rotation - 5 }}
@@ -132,7 +139,12 @@ export default function Polaroid({
         transition: { duration: 0.3 }
       }}
       onClick={() => setIsExpanded(!isExpanded)}
-      className="polaroid cursor-pointer w-48 sm:w-56"
+      onKeyDown={handleKeyDown}
+      role="button"
+      tabIndex={0}
+      aria-expanded={isExpanded}
+      aria-label={`${title}: ${isExpanded && expandedCaption ? expandedCaption : caption}. ${expandedCaption ? "Press to " + (isExpanded ? "collapse" : "expand") : ""}`}
+      className="polaroid cursor-pointer w-48 sm:w-56 focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2"
       style={{ ["--rotation" as string]: `${rotation}deg` }}
     >
       {/* Image area */}
@@ -165,8 +177,11 @@ export default function Polaroid({
       </div>
 
       {/* Tape decoration */}
-      <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-5 bg-sage/40 rotate-2" 
-           style={{ clipPath: "polygon(5% 0%, 95% 0%, 100% 100%, 0% 100%)" }} />
+      <div 
+        className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-5 bg-sage/40 rotate-2" 
+        style={{ clipPath: "polygon(5% 0%, 95% 0%, 100% 100%, 0% 100%)" }}
+        aria-hidden="true"
+      />
     </motion.div>
   );
 }

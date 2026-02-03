@@ -25,8 +25,9 @@ const FloatingCookie = ({ delay, x, y, size, rotation }: { delay: number; x: str
       y: { delay: delay + 0.5, duration: 3, repeat: Infinity, ease: "easeInOut" },
       rotate: { delay: delay + 0.5, duration: 4, repeat: Infinity, ease: "easeInOut" }
     }}
+    aria-hidden="true"
   >
-    <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
+    <svg width={size} height={size} viewBox="0 0 100 100" fill="none" aria-hidden="true">
       {/* Cookie shape */}
       <circle cx="50" cy="50" r="45" fill="#D4A574" />
       <circle cx="50" cy="50" r="42" fill="#E8C9A0" />
@@ -58,8 +59,9 @@ const FloatingHeart = ({ delay, x, y, size, rotation }: { delay: number; x: stri
       y: { delay: delay + 0.3, duration: 4, repeat: Infinity, ease: "easeInOut" },
       rotate: { delay: delay + 0.3, duration: 5, repeat: Infinity, ease: "easeInOut" }
     }}
+    aria-hidden="true"
   >
-    <svg width={size} height={size} viewBox="0 0 100 100" fill="none">
+    <svg width={size} height={size} viewBox="0 0 100 100" fill="none" aria-hidden="true">
       <path
         d="M50 88C50 88 10 55 10 35C10 20 22 10 35 10C43 10 50 15 50 15C50 15 57 10 65 10C78 10 90 20 90 35C90 55 50 88 50 88Z"
         fill="#F4A5AE"
@@ -85,8 +87,9 @@ const FloatingWhisk = ({ delay, x, y, size, rotation }: { delay: number; x: stri
       y: { delay: delay + 0.4, duration: 3.5, repeat: Infinity, ease: "easeInOut" },
       rotate: { delay: delay + 0.4, duration: 4.5, repeat: Infinity, ease: "easeInOut" }
     }}
+    aria-hidden="true"
   >
-    <svg width={size} height={size * 1.5} viewBox="0 0 60 90" fill="none">
+    <svg width={size} height={size * 1.5} viewBox="0 0 60 90" fill="none" aria-hidden="true">
       {/* Handle */}
       <rect x="27" y="0" width="6" height="35" rx="3" fill="#8B7355" />
       {/* Whisk wires */}
@@ -118,8 +121,9 @@ export default function CoverPage({ onNext }: CoverPageProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
           className="mb-6"
+          aria-hidden="true"
         >
-          <svg width="120" height="40" viewBox="0 0 120 40" fill="none" className="text-blush">
+          <svg width="120" height="40" viewBox="0 0 120 40" fill="none" className="text-blush" aria-hidden="true">
             <path
               d="M10 20C10 20 30 5 60 5C90 5 110 20 110 20"
               stroke="currentColor"
@@ -194,6 +198,7 @@ export default function CoverPage({ onNext }: CoverPageProps) {
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -211,9 +216,10 @@ export default function CoverPage({ onNext }: CoverPageProps) {
           animate={{ opacity: 1 }}
           transition={{ delay: 1.3, duration: 0.6 }}
           className="mt-12 flex items-center gap-3"
+          aria-hidden="true"
         >
           <div className="w-12 h-px bg-brown-light/30" />
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-blush/60">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-blush/60" aria-hidden="true">
             <path
               d="M12 21C12 21 4 14 4 9C4 5.5 6.5 3 9.5 3C11 3 12 4 12 4C12 4 13 3 14.5 3C17.5 3 20 5.5 20 9C20 14 12 21 12 21Z"
               fill="currentColor"

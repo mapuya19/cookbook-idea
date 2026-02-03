@@ -21,6 +21,13 @@ export default function RecipeCard({ title, description, delay = 0 }: RecipeCard
     setIsChecked(!isChecked);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleCheck();
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20, rotateX: -10 }}
@@ -31,12 +38,17 @@ export default function RecipeCard({ title, description, delay = 0 }: RecipeCard
         rotateY: 2,
         transition: { duration: 0.2 }
       }}
-      className="recipe-card relative cursor-pointer group"
+      className="recipe-card relative cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2"
       onClick={handleCheck}
+      onKeyDown={handleKeyDown}
+      role="checkbox"
+      aria-checked={isChecked}
+      aria-label={`${title}${description ? `: ${description}` : ""}. ${isChecked ? "Checked" : "Not checked"}`}
+      tabIndex={0}
       style={{ perspective: 1000 }}
     >
       {/* Pin decoration */}
-      <div className="absolute -top-2 right-5 w-4 h-4 bg-sage rounded-full shadow-md z-10" />
+      <div className="absolute -top-2 right-5 w-4 h-4 bg-sage rounded-full shadow-md z-10" aria-hidden="true" />
       
       <div className="flex items-start gap-4">
         {/* Checkbox */}
@@ -78,7 +90,7 @@ export default function RecipeCard({ title, description, delay = 0 }: RecipeCard
           {/* Sparkle effect */}
           <AnimatePresence>
             {showSparkle && (
-              <>
+              <div aria-hidden="true">
                 {[...Array(6)].map((_, i) => (
                   <motion.div
                     key={i}
@@ -100,7 +112,7 @@ export default function RecipeCard({ title, description, delay = 0 }: RecipeCard
                     </svg>
                   </motion.div>
                 ))}
-              </>
+              </div>
             )}
           </AnimatePresence>
         </div>
@@ -138,6 +150,7 @@ export default function RecipeCard({ title, description, delay = 0 }: RecipeCard
               exit={{ scale: 0, rotate: 20 }}
               transition={{ type: "spring", stiffness: 400 }}
               className="flex-shrink-0"
+              aria-hidden="true"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" className="text-blush">
                 <path

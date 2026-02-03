@@ -42,6 +42,13 @@ export default function StickyNote({
 }: StickyNoteProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (expandedText && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      setIsExpanded(!isExpanded);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 40, rotate: rotation - 8, scale: 0.8 }}
@@ -59,11 +66,17 @@ export default function StickyNote({
         transition: { duration: 0.2 }
       }}
       onClick={() => expandedText && setIsExpanded(!isExpanded)}
+      onKeyDown={handleKeyDown}
+      role={expandedText ? "button" : undefined}
+      tabIndex={expandedText ? 0 : undefined}
+      aria-expanded={expandedText ? isExpanded : undefined}
+      aria-label={expandedText ? `${title}. ${isExpanded ? expandedText : "Press to read more"}` : undefined}
       className={`
         sticky-note relative cursor-pointer
         ${colorClasses[color]}
         ${sizeClasses[size]}
         shadow-md hover:shadow-lg transition-shadow
+        focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2
       `}
       style={{ ["--rotation" as string]: `${rotation}deg` }}
     >
@@ -71,6 +84,7 @@ export default function StickyNote({
       <div 
         className={`absolute -top-2 left-1/2 -translate-x-1/2 w-10 h-4 ${tapeColors[color]} rotate-1`}
         style={{ clipPath: "polygon(8% 0%, 92% 0%, 100% 100%, 0% 100%)" }}
+        aria-hidden="true"
       />
 
       {/* Content */}
@@ -106,6 +120,7 @@ export default function StickyNote({
         style={{
           background: `linear-gradient(135deg, transparent 50%, rgba(139, 115, 85, 0.1) 50%)`,
         }}
+        aria-hidden="true"
       />
     </motion.div>
   );
