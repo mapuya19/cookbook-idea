@@ -42,11 +42,13 @@ Follow the prompts to deploy.
 
 ## Features
 
-- 📖 5-page digital scrapbook with page-flip animations
+- 📖 6-page digital scrapbook with smooth slide transitions
 - 🍪 Signature bakes gallery with Polaroid-style photos
 - 💝 "Things I Love About You" sticky notes
 - ✅ Interactive future recipes checklist
-- 🎉 Confetti celebration on the final page
+- 🎉 Confetti celebration on the Valentine page
+- 🎮 Bonus games section with Memory Match and Cookie Clicker
+- ♿ Comprehensive accessibility (keyboard navigation, screen reader support)
 - 📱 Fully responsive - works on mobile and desktop
 
 ## Tech Stack

@@ -186,7 +186,7 @@ export default function CoverPage({ onNext }: CoverPageProps) {
         >
           {/* Button shimmer effect */}
           <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+            className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent"
             initial={{ x: "-100%" }}
             animate={{ x: "200%" }}
             transition={{ delay: 1.5, duration: 1.5, repeat: Infinity, repeatDelay: 3 }}

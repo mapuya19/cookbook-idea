@@ -52,9 +52,8 @@ export default function RecipeCard({ title, description, delay = 0 }: RecipeCard
       
       <div className="flex items-start gap-4">
         {/* Checkbox */}
-        <div className="relative flex-shrink-0 mt-1">
+        <div className="relative shrink-0 mt-1">
           <motion.div
-            animate={{ scale: isChecked ? 1 : 1 }}
             className={`w-6 h-6 rounded border-2 flex items-center justify-center transition-colors duration-300 ${
               isChecked 
                 ? "bg-sage border-sage" 
@@ -149,7 +148,7 @@ export default function RecipeCard({ title, description, delay = 0 }: RecipeCard
               animate={{ scale: 1, rotate: 0 }}
               exit={{ scale: 0, rotate: 20 }}
               transition={{ type: "spring", stiffness: 400 }}
-              className="flex-shrink-0"
+              className="shrink-0"
               aria-hidden="true"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" className="text-blush">
