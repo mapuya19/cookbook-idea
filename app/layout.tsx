@@ -1,11 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Caveat, Quicksand } from "next/font/google";
+import { Gamja_Flower, Quicksand } from "next/font/google";
 import "./globals.css";
 
-const caveat = Caveat({
-  variable: "--font-caveat",
+const gamjaFlower = Gamja_Flower({
+  variable: "--font-gamja",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400"],
 });
 
 const quicksand = Quicksand({
@@ -43,11 +43,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${caveat.variable} ${quicksand.variable} antialiased`}
+        className={`${gamjaFlower.variable} ${quicksand.variable} antialiased`}
       >
-        <a href="#main-content" className="skip-link">
-          Skip to main content
-        </a>
         {children}
       </body>
     </html>
