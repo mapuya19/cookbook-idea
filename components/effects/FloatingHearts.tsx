@@ -70,17 +70,7 @@ export default function FloatingHearts({ isActive }: FloatingHeartsProps) {
             className="absolute"
             style={{ left: `${heart.x}%` }}
           >
-            <svg
-              width={heart.size}
-              height={heart.size}
-              viewBox="0 0 24 24"
-              className="text-blush"
-            >
-              <path
-                d="M12 21C12 21 4 14 4 9C4 5.5 6.5 3 9.5 3C11 3 12 4 12 4C12 4 13 3 14.5 3C17.5 3 20 5.5 20 9C20 14 12 21 12 21Z"
-                fill="currentColor"
-              />
-            </svg>
+            <span style={{ fontSize: heart.size }}>🍵</span>
           </motion.div>
         ))}
       </AnimatePresence>

@@ -5,12 +5,15 @@ import confetti from "canvas-confetti";
 
 export function useConfetti() {
   const fireConfetti = useCallback(() => {
+    // Matcha-themed confetti colors
+    const matchaColors = ["#7B9E6C", "#A8C69F", "#8AAA79", "#B5D4A5", "#F5F5F0"];
+    
     // First burst - center
     confetti({
       particleCount: 100,
       spread: 70,
       origin: { y: 0.6 },
-      colors: ["#F4A5AE", "#A8C69F", "#FFB6C1", "#FDF6E3", "#E8CBA8"],
+      colors: matchaColors,
     });
 
     // Second burst - left
@@ -20,7 +23,7 @@ export function useConfetti() {
         angle: 60,
         spread: 55,
         origin: { x: 0, y: 0.6 },
-        colors: ["#F4A5AE", "#A8C69F", "#FFB6C1", "#FDF6E3"],
+        colors: matchaColors,
       });
     }, 150);
 
@@ -31,22 +34,22 @@ export function useConfetti() {
         angle: 120,
         spread: 55,
         origin: { x: 1, y: 0.6 },
-        colors: ["#F4A5AE", "#A8C69F", "#FFB6C1", "#FDF6E3"],
+        colors: matchaColors,
       });
     }, 300);
 
-    // Heart-shaped confetti burst
+    // Leaf-shaped confetti burst (instead of hearts)
     setTimeout(() => {
-      const heart = confetti.shapeFromPath({
-        path: "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z",
+      const leaf = confetti.shapeFromPath({
+        path: "M12 2C12 2 4 8 4 14C4 18 7.5 22 12 22C16.5 22 20 18 20 14C20 8 12 2 12 2Z",
       });
 
       confetti({
         particleCount: 30,
         spread: 100,
         origin: { y: 0.5 },
-        shapes: [heart],
-        colors: ["#F4A5AE", "#FFB6C1", "#FF69B4"],
+        shapes: [leaf],
+        colors: ["#7B9E6C", "#5A7A4C", "#8AAA79"],
         scalar: 2,
       });
     }, 500);

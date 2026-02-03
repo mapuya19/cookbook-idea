@@ -26,17 +26,20 @@ function prefersReducedMotion(): boolean {
 
 export default function CursorTrail() {
   const [particles, setParticles] = useState<Particle[]>([]);
-  const [isEnabled, setIsEnabled] = useState(false);
   const particleIdRef = useRef(0);
   const lastPositionRef = useRef({ x: 0, y: 0 });
   const throttleRef = useRef(false);
 
-  // Check if we should enable the effect
-  useEffect(() => {
-    const shouldEnable = !isTouchDevice() && !prefersReducedMotion();
-    setIsEnabled(shouldEnable);
+  // Compute initial enabled state synchronously to avoid cascading renders
+  const getIsEnabled = () => {
+    if (typeof window === "undefined") return false;
+    return !isTouchDevice() && !prefersReducedMotion();
+  };
 
-    // Listen for reduced motion preference changes
+  const [isEnabled, setIsEnabled] = useState(getIsEnabled);
+
+  // Listen for reduced motion preference changes
+  useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     const handleChange = () => {
       setIsEnabled(!isTouchDevice() && !mediaQuery.matches);
@@ -122,18 +125,7 @@ export default function CursorTrail() {
             style={{ left: 0, top: 0 }}
           >
             {particle.type === "heart" ? (
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                className="text-blush/60"
-              >
-                <path
-                  d="M12 21C12 21 4 14 4 9C4 5.5 6.5 3 9.5 3C11 3 12 4 12 4C12 4 13 3 14.5 3C17.5 3 20 5.5 20 9C20 14 12 21 12 21Z"
-                  fill="currentColor"
-                />
-              </svg>
+              <span className="text-xl opacity-60">🍵</span>
             ) : (
               <svg
                 width="20"
@@ -142,11 +134,11 @@ export default function CursorTrail() {
                 fill="none"
                 className="text-brown/40"
               >
-                {/* Cookie crumb */}
-                <circle cx="12" cy="12" r="8" fill="#D4A574" />
-                <circle cx="9" cy="10" r="2" fill="#5D4037" />
-                <circle cx="15" cy="11" r="1.5" fill="#5D4037" />
-                <circle cx="11" cy="15" r="1.5" fill="#5D4037" />
+                {/* Matcha cookie crumb */}
+                <circle cx="12" cy="12" r="8" fill="#A8C69F" />
+                <circle cx="9" cy="10" r="2" fill="#5A7A4C" />
+                <circle cx="15" cy="11" r="1.5" fill="#5A7A4C" />
+                <circle cx="11" cy="15" r="1.5" fill="#5A7A4C" />
               </svg>
             )}
           </motion.div>

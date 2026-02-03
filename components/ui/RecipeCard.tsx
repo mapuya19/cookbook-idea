@@ -148,15 +148,10 @@ export default function RecipeCard({ title, description, delay = 0 }: RecipeCard
               animate={{ scale: 1, rotate: 0 }}
               exit={{ scale: 0, rotate: 20 }}
               transition={{ type: "spring", stiffness: 400 }}
-              className="shrink-0"
+              className="shrink-0 text-2xl"
               aria-hidden="true"
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" className="text-blush">
-                <path
-                  d="M12 21C12 21 4 14 4 9C4 5.5 6.5 3 9.5 3C11 3 12 4 12 4C12 4 13 3 14.5 3C17.5 3 20 5.5 20 9C20 14 12 21 12 21Z"
-                  fill="currentColor"
-                />
-              </svg>
+              🍵
             </motion.div>
           )}
         </AnimatePresence>

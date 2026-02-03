@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
 interface StickyNoteProps {
@@ -96,22 +96,31 @@ export default function StickyNote({
           {title}
         </p>
         
-        {isExpanded && expandedText && (
-          <motion.p
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="font-body text-sm text-brown-light mt-2 leading-relaxed"
-          >
-            {expandedText}
-          </motion.p>
-        )}
-
-        {expandedText && !isExpanded && (
-          <p className="font-body text-xs text-brown-light/50 mt-2 italic">
-            tap to read more...
-          </p>
-        )}
+        <AnimatePresence mode="wait">
+          {isExpanded && expandedText ? (
+            <motion.p
+              key="expanded"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              className="font-body text-sm text-brown-light mt-2 leading-relaxed"
+            >
+              {expandedText}
+            </motion.p>
+          ) : expandedText ? (
+            <motion.p
+              key="hint"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="font-body text-xs text-brown-light/50 mt-2 italic"
+            >
+              tap to read more...
+            </motion.p>
+          ) : null}
+        </AnimatePresence>
       </motion.div>
 
       {/* Corner fold effect */}

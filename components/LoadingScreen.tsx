@@ -176,7 +176,7 @@ export default function LoadingScreen({ onLoadComplete, imagesToPreload = [] }: 
               cx="115"
               cy="57"
               r="4"
-              fill={isComplete ? "#A8C69F" : "#F4A5AE"}
+              fill={isComplete ? "#8AAA79" : "#7B9E6C"}
               animate={{
                 opacity: isComplete ? 1 : [1, 0.4, 1],
               }}
@@ -264,14 +264,14 @@ export default function LoadingScreen({ onLoadComplete, imagesToPreload = [] }: 
 
         {/* Decorative cookies - hidden on very small screens */}
         <motion.div
-          className="absolute bottom-10 left-6 sm:left-10 opacity-20 hidden sm:block"
+          className="absolute bottom-10 left-6 sm:left-10 opacity-20 hidden sm:block pointer-events-none"
           animate={{ rotate: [0, 10, 0] }}
           transition={{ duration: 3, repeat: Infinity }}
         >
           <span className="text-3xl sm:text-4xl">🍪</span>
         </motion.div>
         <motion.div
-          className="absolute bottom-16 right-8 sm:right-12 opacity-20 hidden sm:block"
+          className="absolute bottom-16 right-8 sm:right-12 opacity-20 hidden sm:block pointer-events-none"
           animate={{ rotate: [0, -10, 0] }}
           transition={{ duration: 4, repeat: Infinity }}
         >

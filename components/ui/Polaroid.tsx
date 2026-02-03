@@ -8,7 +8,6 @@ interface PolaroidProps {
   imageSrc?: string;
   title: string;
   caption: string;
-  expandedCaption?: string;
   rotation?: number;
   delay?: number;
   placeholder?: "cookie" | "pizza" | "mochi" | "bread";
@@ -110,22 +109,13 @@ export default function Polaroid({
   imageSrc,
   title,
   caption,
-  expandedCaption,
   rotation = 0,
   delay = 0,
   placeholder = "cookie",
 }: PolaroidProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
   const showImage = imageSrc && !imageError;
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      setIsExpanded(!isExpanded);
-    }
-  };
 
   return (
     <motion.div
@@ -138,13 +128,8 @@ export default function Polaroid({
         scale: 1.02,
         transition: { duration: 0.3 }
       }}
-      onClick={() => setIsExpanded(!isExpanded)}
-      onKeyDown={handleKeyDown}
-      role="button"
-      tabIndex={0}
-      aria-expanded={isExpanded}
-      aria-label={`${title}: ${isExpanded && expandedCaption ? expandedCaption : caption}. ${expandedCaption ? "Press to " + (isExpanded ? "collapse" : "expand") : ""}`}
-      className="polaroid cursor-pointer w-36 sm:w-44 md:w-48 lg:w-56 focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2"
+      aria-label={`${title}: ${caption}`}
+      className="polaroid w-36 sm:w-44 md:w-48 lg:w-56"
       style={{ ["--rotation" as string]: `${rotation}deg` }}
     >
       {/* Image area */}
@@ -167,13 +152,9 @@ export default function Polaroid({
         <p className="font-handwritten text-base sm:text-lg md:text-xl text-brown text-center leading-tight">
           {title}
         </p>
-        <motion.p
-          initial={{ height: "auto" }}
-          animate={{ height: "auto" }}
-          className="font-body text-xs sm:text-sm text-brown-light/70 text-center mt-0.5 sm:mt-1 italic line-clamp-2"
-        >
-          {isExpanded && expandedCaption ? expandedCaption : caption}
-        </motion.p>
+        <p className="font-body text-xs sm:text-sm text-brown-light/70 text-center mt-0.5 sm:mt-1 italic line-clamp-2">
+          {caption}
+        </p>
       </div>
 
       {/* Tape decoration */}
