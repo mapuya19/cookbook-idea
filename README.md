@@ -13,16 +13,14 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) to see the scrapbook.
 
-### Adding Your Photos
+### Photos
 
-Drop your photos into the `public/images/` folder:
+Photos are stored in the `public/images/` folder:
 
-- `miffy-cookies.jpg` - Your Miffy cookie photos
-- `heart-pizza.jpg` - The heart pizza
-- `mango-mochi.jpg` - Mango mochi photos
-- `cookies.jpg` - Any other cookie photos
-
-The scrapbook will use beautiful placeholder illustrations if photos aren't added yet.
+- `matcha-cookies.jpg` - Matcha checkerboard cookies
+- `cake-class.jpg` - Cake decorating date (Miffy & Cinnamoroll)
+- `miffy-dessert.jpg` - Miffy dessert from C as in Charlie
+- `heart-pizza.jpg` - Heart-shaped pizza
 
 ## Deploying to Vercel
 
@@ -44,21 +42,20 @@ Follow the prompts to deploy.
 
 ## Features
 
-- 📖 6-page digital scrapbook with page-flip animations
+- 📖 5-page digital scrapbook with page-flip animations
 - 🍪 Signature bakes gallery with Polaroid-style photos
-- 💝 Handwritten-style love notes
-- 📅 Baking memories timeline
+- 💝 "Things I Love About You" sticky notes
 - ✅ Interactive future recipes checklist
 - 🎉 Confetti celebration on the final page
 - 📱 Fully responsive - works on mobile and desktop
 
 ## Tech Stack
 
-- Next.js 14 (App Router)
-- Tailwind CSS
+- Next.js 16 (App Router)
+- React 19
+- Tailwind CSS 4
 - Framer Motion
 - canvas-confetti
-- Web Audio API for sound effects
 
 ---
 
