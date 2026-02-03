@@ -6,6 +6,7 @@ import BakingGame from "./BakingGame";
 import CookieClicker from "./CookieClicker";
 import CatchGame from "./CatchGame";
 import { SECRET_GAME_UNLOCKED_KEY } from "./CoverPage";
+import { playClick } from "@/utils/sounds";
 
 interface GameSelectProps {
   onNext: () => void;
@@ -17,12 +18,14 @@ type GameType = "select" | "memory" | "clicker" | "catch";
 export default function GameSelect({ onPrev }: GameSelectProps) {
   const [currentGame, setCurrentGame] = useState<GameType>("select");
   const [secretUnlocked, setSecretUnlocked] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   // Check if secret game is unlocked
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const unlocked = localStorage.getItem(SECRET_GAME_UNLOCKED_KEY) === 'true';
       setSecretUnlocked(unlocked);
+      setMounted(true);
     }
   }, []);
 
@@ -36,6 +39,11 @@ export default function GameSelect({ onPrev }: GameSelectProps) {
 
   if (currentGame === "catch") {
     return <CatchGame onBack={() => setCurrentGame("select")} />;
+  }
+
+  // Prevent flickering by waiting for localStorage check to complete
+  if (!mounted) {
+    return <div className="scrapbook-page paper-texture relative overflow-hidden" />;
   }
 
   return (
@@ -65,11 +73,11 @@ export default function GameSelect({ onPrev }: GameSelectProps) {
             transition={{ delay: 0.2, duration: 0.5 }}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => setCurrentGame("memory")}
+            onClick={() => { playClick(); setCurrentGame("memory"); }}
             className="group bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2 touch-manipulation active:scale-[0.98]"
           >
             <div className="flex items-center gap-3 sm:gap-4">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-blush-light rounded-xl flex items-center justify-center text-2xl sm:text-3xl group-hover:scale-110 transition-transform flex-shrink-0">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-blush-light rounded-xl flex items-center justify-center text-2xl sm:text-3xl group-hover:scale-110 transition-transform shrink-0">
                 🧠
               </div>
               <div className="flex-1 min-w-0">
@@ -81,7 +89,7 @@ export default function GameSelect({ onPrev }: GameSelectProps) {
                 </p>
               </div>
               <svg
-                className="w-5 h-5 sm:w-6 sm:h-6 text-brown-light group-hover:text-blush group-hover:translate-x-1 transition-all flex-shrink-0"
+                className="w-5 h-5 sm:w-6 sm:h-6 text-brown-light group-hover:text-blush group-hover:translate-x-1 transition-all shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -98,11 +106,11 @@ export default function GameSelect({ onPrev }: GameSelectProps) {
             transition={{ delay: 0.3, duration: 0.5 }}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => setCurrentGame("clicker")}
+            onClick={() => { playClick(); setCurrentGame("clicker"); }}
             className="group bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 touch-manipulation active:scale-[0.98]"
           >
             <div className="flex items-center gap-3 sm:gap-4">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-sage-light rounded-xl flex items-center justify-center text-2xl sm:text-3xl group-hover:scale-110 transition-transform flex-shrink-0">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-sage-light rounded-xl flex items-center justify-center text-2xl sm:text-3xl group-hover:scale-110 transition-transform shrink-0">
                 🍪
               </div>
               <div className="flex-1 min-w-0">
@@ -114,7 +122,7 @@ export default function GameSelect({ onPrev }: GameSelectProps) {
                 </p>
               </div>
               <svg
-                className="w-5 h-5 sm:w-6 sm:h-6 text-brown-light group-hover:text-sage group-hover:translate-x-1 transition-all flex-shrink-0"
+                className="w-5 h-5 sm:w-6 sm:h-6 text-brown-light group-hover:text-sage group-hover:translate-x-1 transition-all shrink-0"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -132,11 +140,11 @@ export default function GameSelect({ onPrev }: GameSelectProps) {
               transition={{ delay: 0.4, duration: 0.5, type: "spring" }}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => setCurrentGame("catch")}
+              onClick={() => { playClick(); setCurrentGame("catch"); }}
               className="group bg-linear-to-r from-blush/10 to-sage/10 border-2 border-dashed border-blush/30 rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2 touch-manipulation active:scale-[0.98]"
             >
               <div className="flex items-center gap-3 sm:gap-4">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-linear-to-br from-blush to-sage rounded-xl flex items-center justify-center text-2xl sm:text-3xl group-hover:scale-110 transition-transform flex-shrink-0">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-linear-to-br from-blush to-sage rounded-xl flex items-center justify-center text-2xl sm:text-3xl group-hover:scale-110 transition-transform shrink-0">
                   🎮
                 </div>
                 <div className="flex-1 min-w-0">
@@ -153,7 +161,7 @@ export default function GameSelect({ onPrev }: GameSelectProps) {
                   </p>
                 </div>
                 <svg
-                  className="w-5 h-5 sm:w-6 sm:h-6 text-brown-light group-hover:text-blush group-hover:translate-x-1 transition-all flex-shrink-0"
+                  className="w-5 h-5 sm:w-6 sm:h-6 text-brown-light group-hover:text-blush group-hover:translate-x-1 transition-all shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -172,18 +180,18 @@ export default function GameSelect({ onPrev }: GameSelectProps) {
           transition={{ delay: 0.5 }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={onPrev}
+          onClick={() => { playClick(); onPrev(); }}
           className="px-5 sm:px-6 py-2.5 sm:py-3 bg-brown-light/20 text-brown font-body font-semibold rounded-full shadow-md hover:shadow-lg hover:bg-brown-light/30 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brown focus-visible:ring-offset-2 touch-manipulation active:scale-95"
         >
           Back to Scrapbook
         </motion.button>
 
-        {/* Decorative elements */}
+        {/* Decorative elements - positioned in far corners to avoid content */}
         <motion.div
           initial={{ opacity: 0, rotate: -10 }}
-          animate={{ opacity: 0.15, rotate: -10 }}
+          animate={{ opacity: 0.1, rotate: -10 }}
           transition={{ delay: 0.8 }}
-          className="absolute top-16 right-8 text-6xl pointer-events-none hidden sm:block"
+          className="absolute top-2 right-2 text-4xl pointer-events-none hidden xl:block"
           aria-hidden="true"
         >
           🧁
@@ -191,9 +199,9 @@ export default function GameSelect({ onPrev }: GameSelectProps) {
         
         <motion.div
           initial={{ opacity: 0, rotate: 15 }}
-          animate={{ opacity: 0.15, rotate: 15 }}
+          animate={{ opacity: 0.1, rotate: 15 }}
           transition={{ delay: 1 }}
-          className="absolute bottom-24 left-8 text-5xl pointer-events-none hidden sm:block"
+          className="absolute bottom-2 left-2 text-4xl pointer-events-none hidden xl:block"
           aria-hidden="true"
         >
           🎂

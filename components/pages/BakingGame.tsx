@@ -262,18 +262,7 @@ export default function BakingGame({ onPrev }: BakingGameProps) {
                     transition={{ duration: 0.2 }}
                     className="absolute inset-0 flex items-center justify-center"
                   >
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      className="text-white/80"
-                      aria-hidden="true"
-                    >
-                      <path
-                        d="M12 21C12 21 4 14 4 9C4 5.5 6.5 3 9.5 3C11 3 12 4 12 4C12 4 13 3 14.5 3C17.5 3 20 5.5 20 9C20 14 12 21 12 21Z"
-                        fill="currentColor"
-                      />
-                    </svg>
+                    <span className="text-2xl text-white/60" aria-hidden="true">?</span>
                   </motion.span>
                 )}
               </AnimatePresence>
@@ -333,25 +322,25 @@ export default function BakingGame({ onPrev }: BakingGameProps) {
           </motion.button>
         </motion.div>
 
-        {/* Decorative elements */}
+        {/* Decorative elements - positioned in far corners to avoid content */}
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.2 }}
+          animate={{ opacity: 0.12 }}
           transition={{ delay: 1 }}
-          className="absolute top-10 right-6 hidden lg:block"
+          className="absolute top-2 right-2 hidden xl:block pointer-events-none"
           aria-hidden="true"
         >
-          <span className="text-5xl">🧁</span>
+          <span className="text-3xl">🧁</span>
         </motion.div>
         
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.2 }}
+          animate={{ opacity: 0.12 }}
           transition={{ delay: 1.2 }}
-          className="absolute bottom-20 left-6 hidden lg:block"
+          className="absolute bottom-2 left-2 hidden xl:block pointer-events-none"
           aria-hidden="true"
         >
-          <span className="text-5xl">🍪</span>
+          <span className="text-3xl">🍪</span>
         </motion.div>
       </div>
     </div>

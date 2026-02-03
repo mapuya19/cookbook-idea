@@ -13,7 +13,7 @@ export default function MusicPlayer() {
 
   useEffect(() => {
     // Create audio element
-    const audio = new Audio("/audio/background-music.mp3");
+    const audio = new Audio("/audio/background-music-compressed.mp3");
     audio.loop = true;
     audio.volume = volume;
     audioRef.current = audio;

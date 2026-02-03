@@ -159,7 +159,7 @@ export default function ValentinePage({ onNext }: ValentinePageProps) {
                 aria-hidden="true"
               >
                 {[...Array(5)].map((_, i) => (
-                  <motion.svg
+                  <motion.span
                     key={i}
                     animate={{ 
                       y: [0, -5, 0],
@@ -171,17 +171,11 @@ export default function ValentinePage({ onNext }: ValentinePageProps) {
                       repeat: Infinity,
                       ease: "easeInOut",
                     }}
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    className="text-blush"
+                    className="text-xl"
                     aria-hidden="true"
                   >
-                    <path
-                      d="M12 21C12 21 4 14 4 9C4 5.5 6.5 3 9.5 3C11 3 12 4 12 4C12 4 13 3 14.5 3C17.5 3 20 5.5 20 9C20 14 12 21 12 21Z"
-                      fill="currentColor"
-                    />
-                  </motion.svg>
+                    🍡
+                  </motion.span>
                 ))}
               </motion.div>
             </motion.div>
@@ -193,29 +187,22 @@ export default function ValentinePage({ onNext }: ValentinePageProps) {
               transition={{ duration: 0.6, type: "spring", stiffness: 200 }}
               className="py-12"
             >
-              {/* Big heart */}
+              {/* Big dango */}
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                className="mb-8"
+                className="mb-8 text-center"
                 aria-hidden="true"
               >
-                <svg
-                  width="120"
-                  height="120"
-                  viewBox="0 0 24 24"
-                  className="text-blush mx-auto"
-                  aria-hidden="true"
+                <motion.span
+                  className="text-8xl sm:text-9xl inline-block"
+                  initial={{ scale: 0.8 }}
+                  animate={{ scale: [0.8, 1.1, 1] }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
                 >
-                  <motion.path
-                    d="M12 21C12 21 4 14 4 9C4 5.5 6.5 3 9.5 3C11 3 12 4 12 4C12 4 13 3 14.5 3C17.5 3 20 5.5 20 9C20 14 12 21 12 21Z"
-                    fill="currentColor"
-                    initial={{ scale: 0.8 }}
-                    animate={{ scale: [0.8, 1.1, 1] }}
-                    transition={{ duration: 0.5, delay: 0.3 }}
-                  />
-                </svg>
+                  🍡
+                </motion.span>
               </motion.div>
 
               {/* Love message */}
@@ -264,35 +251,25 @@ export default function ValentinePage({ onNext }: ValentinePageProps) {
         </AnimatePresence>
       </div>
 
-      {/* Background decorative elements */}
+      {/* Background decorative elements - positioned in far corners to avoid content */}
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: 0.1 }}
+        animate={{ opacity: 0.08 }}
         transition={{ delay: 0.5 }}
-        className="absolute top-10 left-10 hidden lg:block"
+        className="absolute top-2 left-2 hidden xl:block pointer-events-none"
         aria-hidden="true"
       >
-        <svg width="80" height="80" viewBox="0 0 80 80" className="text-blush" aria-hidden="true">
-          <path
-            d="M40 70C40 70 10 45 10 25C10 12 20 5 32 5C38 5 40 12 40 12C40 12 42 5 48 5C60 5 70 12 70 25C70 45 40 70 40 70Z"
-            fill="currentColor"
-          />
-        </svg>
+        <span className="text-3xl">🍡</span>
       </motion.div>
 
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: 0.1 }}
+        animate={{ opacity: 0.08 }}
         transition={{ delay: 0.7 }}
-        className="absolute bottom-20 right-10 hidden lg:block"
+        className="absolute bottom-2 right-2 hidden xl:block pointer-events-none"
         aria-hidden="true"
       >
-        <svg width="60" height="60" viewBox="0 0 60 60" className="text-sage" aria-hidden="true">
-          <path
-            d="M30 52C30 52 8 34 8 19C8 9 15 4 24 4C28 4 30 9 30 9C30 9 32 4 36 4C45 4 52 9 52 19C52 34 30 52 30 52Z"
-            fill="currentColor"
-          />
-        </svg>
+        <span className="text-3xl">🍡</span>
       </motion.div>
     </div>
   );

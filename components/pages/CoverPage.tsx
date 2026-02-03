@@ -90,12 +90,7 @@ const FloatingHeart = ({ delay, x, y, size, rotation, introComplete }: { delay: 
     }}
     aria-hidden="true"
   >
-    <svg width={size} height={size} viewBox="0 0 100 100" fill="none" aria-hidden="true">
-      <path
-        d="M50 88C50 88 10 55 10 35C10 20 22 10 35 10C43 10 50 15 50 15C50 15 57 10 65 10C78 10 90 20 90 35C90 55 50 88 50 88Z"
-        fill="#F4A5AE"
-      />
-    </svg>
+    <span style={{ fontSize: size }}>🍵</span>
   </motion.div>
 );
 
@@ -251,21 +246,25 @@ export default function CoverPage({ onNext }: CoverPageProps) {
           className="mb-4 sm:mb-6"
           aria-hidden="true"
         >
-          <svg width="100" height="35" viewBox="0 0 120 40" fill="none" className="text-blush sm:w-[120px] sm:h-[40px]" aria-hidden="true">
-            <path
-              d="M10 20C10 20 30 5 60 5C90 5 110 20 110 20"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-            <circle cx="60" cy="5" r="4" fill="currentColor" />
-            <path
-              d="M55 8L60 15L65 8"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
+          <svg width="80" height="50" viewBox="0 0 80 50" fill="none" className="text-blush sm:w-[100px] sm:h-[60px]" aria-hidden="true">
+            {/* Whisk (left, tilted) */}
+            <g transform="rotate(-30 25 25)">
+              {/* Handle */}
+              <rect x="23" y="30" width="4" height="18" rx="2" fill="currentColor" />
+              {/* Whisk head */}
+              <ellipse cx="25" cy="20" rx="8" ry="12" stroke="currentColor" strokeWidth="2" fill="none" />
+              <path d="M21 12 Q25 22 29 12" stroke="currentColor" strokeWidth="1.5" fill="none" />
+              <path d="M19 16 Q25 24 31 16" stroke="currentColor" strokeWidth="1.5" fill="none" />
+              <line x1="25" y1="8" x2="25" y2="22" stroke="currentColor" strokeWidth="1.5" />
+            </g>
+            {/* Wooden spoon (right, tilted) */}
+            <g transform="rotate(30 55 25)">
+              {/* Handle */}
+              <rect x="53" y="28" width="4" height="20" rx="2" fill="currentColor" />
+              {/* Spoon bowl */}
+              <ellipse cx="55" cy="18" rx="7" ry="10" fill="currentColor" />
+              <ellipse cx="55" cy="17" rx="4" ry="6" fill="currentColor" opacity="0.6" />
+            </g>
           </svg>
         </motion.div>
 
@@ -386,22 +385,15 @@ export default function CoverPage({ onNext }: CoverPageProps) {
             transition={{ delay: contentDelay + 1.6, duration: 0.4 }}
             style={{ transformOrigin: "right" }}
           />
-          <motion.svg 
-            width="24" 
-            height="24" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            className="text-blush/60" 
+          <motion.span 
+            className="text-xl"
             aria-hidden="true"
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ delay: contentDelay + 1.7, duration: 0.5, type: "spring" }}
           >
-            <path
-              d="M12 21C12 21 4 14 4 9C4 5.5 6.5 3 9.5 3C11 3 12 4 12 4C12 4 13 3 14.5 3C17.5 3 20 5.5 20 9C20 14 12 21 12 21Z"
-              fill="currentColor"
-            />
-          </motion.svg>
+            🍡
+          </motion.span>
           <motion.div 
             className="w-12 h-px bg-brown-light/30"
             initial={{ scaleX: 0 }}

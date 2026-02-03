@@ -262,20 +262,20 @@ export default function LoadingScreen({ onLoadComplete, imagesToPreload = [] }: 
           {loadingText}
         </motion.p>
 
-        {/* Decorative cookies - hidden on very small screens */}
+        {/* Decorative cookies - positioned in far corners to avoid content */}
         <motion.div
-          className="absolute bottom-10 left-6 sm:left-10 opacity-20 hidden sm:block pointer-events-none"
+          className="absolute bottom-4 left-4 opacity-15 hidden xl:block pointer-events-none"
           animate={{ rotate: [0, 10, 0] }}
           transition={{ duration: 3, repeat: Infinity }}
         >
-          <span className="text-3xl sm:text-4xl">🍪</span>
+          <span className="text-3xl">🍪</span>
         </motion.div>
         <motion.div
-          className="absolute bottom-16 right-8 sm:right-12 opacity-20 hidden sm:block pointer-events-none"
+          className="absolute bottom-4 right-4 opacity-15 hidden xl:block pointer-events-none"
           animate={{ rotate: [0, -10, 0] }}
           transition={{ duration: 4, repeat: Infinity }}
         >
-          <span className="text-2xl sm:text-3xl">🧁</span>
+          <span className="text-2xl">🧁</span>
         </motion.div>
       </motion.div>
     </AnimatePresence>

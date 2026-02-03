@@ -1,13 +1,43 @@
 "use client";
 
-import { useCallback, useEffect, useState, useRef } from "react";
+import React, { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import LoadingScreen from "./LoadingScreen";
 import CursorTrail from "./effects/CursorTrail";
 import MusicPlayer from "./MusicPlayer";
-import { playPageFlip } from "@/utils/sounds";
+import { playPageFlip } from "../utils/sounds";
+
+// External store for navigation state (direction and previous path)
+// This avoids using refs during render while maintaining proper React patterns
+interface NavigationStore {
+  direction: number;
+  prevPath: string;
+}
+let navigationStore: NavigationStore = { direction: 0, prevPath: "/" };
+const navigationListeners = new Set<() => void>();
+
+function subscribeToNavigation(callback: () => void) {
+  navigationListeners.add(callback);
+  return () => navigationListeners.delete(callback);
+}
+
+function getNavigationSnapshot(): NavigationStore {
+  return navigationStore;
+}
+
+function setDirection(newDirection: number) {
+  navigationStore = { ...navigationStore, direction: newDirection };
+  navigationListeners.forEach(listener => listener());
+}
+
+function updatePrevPath(pathname: string) {
+  if (navigationStore.prevPath !== pathname) {
+    navigationStore = { ...navigationStore, prevPath: pathname };
+    navigationListeners.forEach(listener => listener());
+  }
+}
 
 // Images to preload for smooth experience
 const imagesToPreload = [
@@ -63,27 +93,29 @@ export default function ScrapbookLayout({ children }: ScrapbookLayoutProps) {
   const router = useRouter();
   // Only show loading screen if we haven't loaded once already
   const [isLoading, setIsLoading] = useState(!hasLoadedOnce);
-  const [direction, setDirection] = useState(0);
-  const prevPathRef = useRef(pathname);
+  const navState = useSyncExternalStore(subscribeToNavigation, getNavigationSnapshot, getNavigationSnapshot);
+  const direction = navState.direction;
 
   // Find current page index
   const currentPageIndex = pages.findIndex((p) => p.path === pathname);
   const currentPage = currentPageIndex === -1 ? 0 : currentPageIndex;
 
-  // Track direction when pathname changes (computed during render, not in effect)
-  if (prevPathRef.current !== pathname) {
-    const prevIndex = pages.findIndex((p) => p.path === prevPathRef.current);
-    const newIndex = pages.findIndex((p) => p.path === pathname);
-    
-    if (prevIndex !== -1 && newIndex !== -1 && prevIndex !== newIndex) {
-      const newDirection = newIndex > prevIndex ? 1 : -1;
-      if (direction !== newDirection) {
-        setDirection(newDirection);
+  // Handle direction updates for external navigation (browser back/forward)
+  useEffect(() => {
+    const prevPath = navState.prevPath;
+    if (prevPath !== pathname) {
+      const prevIndex = pages.findIndex((p) => p.path === prevPath);
+      const newIndex = pages.findIndex((p) => p.path === pathname);
+      // Only update direction if navigating via browser back/forward
+      if (prevIndex !== -1 && newIndex !== -1 && prevIndex !== newIndex) {
+        const expectedDirection = newIndex > prevIndex ? 1 : -1;
+        if (navState.direction !== expectedDirection) {
+          setDirection(expectedDirection);
+        }
       }
+      updatePrevPath(pathname);
     }
-    
-    prevPathRef.current = pathname;
-  }
+  }, [pathname, navState.prevPath, navState.direction]);
 
   const goToPage = useCallback((pageIndex: number) => {
     if (pageIndex === currentPage) return;

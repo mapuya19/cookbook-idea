@@ -10,23 +10,23 @@ interface FutureRecipesProps {
 
 const futureRecipes = [
   {
-    title: "Cinnamon rolls on a slow Sunday morning",
-    description: "Warm, gooey, and made with nowhere to be",
+    title: "Cinnamoroll cinnamon rolls",
+    description: "As cute as the character, twice as delicious",
   },
   {
-    title: "That complicated recipe you keep saving",
-    description: "The one you've bookmarked a hundred times — let's finally try it",
+    title: "Mango mochi dessert",
+    description: "Soft, chewy, and bursting with tropical sweetness",
   },
   {
     title: "Something we'll definitely mess up together",
     description: "And laugh about while eating it anyway",
   },
   {
-    title: "Birthday cake for each other",
-    description: "Homemade, imperfect, and full of love",
+    title: "Birthday cupcakes for each other",
+    description: "Homemade, decorated with love (and probably too much frosting)",
   },
   {
-    title: "A surprise bake just because",
+    title: "A surprise (just because)",
     description: "No occasion needed, just wanting to see you smile",
   },
 ];
@@ -74,15 +74,15 @@ export default function FutureRecipes({ onNext }: FutureRecipesProps) {
           </p>
         </motion.div>
 
-        {/* Decorative elements */}
+        {/* Decorative elements - positioned in far corners to avoid content */}
         <motion.div
           initial={{ opacity: 0, rotate: -10 }}
-          animate={{ opacity: 0.15, rotate: 0 }}
+          animate={{ opacity: 0.1, rotate: 0 }}
           transition={{ delay: 1.2 }}
-          className="absolute top-16 right-4 hidden lg:block"
+          className="absolute top-2 right-2 hidden xl:block pointer-events-none"
           aria-hidden="true"
         >
-          <svg width="100" height="100" viewBox="0 0 100 100" className="text-blush" aria-hidden="true">
+          <svg width="60" height="60" viewBox="0 0 100 100" className="text-blush" aria-hidden="true">
             {/* Mixing bowl */}
             <ellipse cx="50" cy="70" rx="40" ry="20" fill="currentColor" />
             <ellipse cx="50" cy="65" rx="35" ry="15" fill="#FDF6E3" />
@@ -94,12 +94,12 @@ export default function FutureRecipes({ onNext }: FutureRecipesProps) {
 
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.1 }}
+          animate={{ opacity: 0.08 }}
           transition={{ delay: 1.4 }}
-          className="absolute bottom-32 left-4 hidden lg:block"
+          className="absolute bottom-2 left-2 hidden xl:block pointer-events-none"
           aria-hidden="true"
         >
-          <svg width="60" height="60" viewBox="0 0 60 60" className="text-sage" aria-hidden="true">
+          <svg width="45" height="45" viewBox="0 0 60 60" className="text-sage" aria-hidden="true">
             {/* Rolling pin */}
             <rect x="5" y="25" width="50" height="10" rx="5" fill="currentColor" />
             <rect x="0" y="27" width="8" height="6" rx="3" fill="currentColor" />

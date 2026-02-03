@@ -13,27 +13,38 @@ interface FallingItem {
   id: number;
   x: number;
   y: number;
-  type: "cookie" | "cupcake" | "heart";
+  type: "cookie" | "cupcake" | "matcha";
   speed: number;
 }
 
 // Responsive game dimensions - will be calculated based on screen size
 const getGameDimensions = () => {
-  if (typeof window === 'undefined') return { width: 320, height: 450 };
+  if (typeof window === 'undefined') return { width: 300, height: 340, itemSize: 38, basketWidth: 60, basketHeight: 52 };
   const screenWidth = window.innerWidth;
   const screenHeight = window.innerHeight;
   
-  // On mobile, use more of the screen
+  // On mobile, calculate dimensions more conservatively
+  // Leave room for nav arrows (50px each side) and padding
   if (screenWidth < 640) {
-    const width = Math.min(screenWidth - 32, 350); // 16px padding on each side
-    const height = Math.min(screenHeight - 280, 450); // Leave room for header and buttons
-    return { width, height };
+    // Account for nav arrows and padding: ~60px on each side minimum
+    const maxWidth = screenWidth - 80; // Leave space for nav arrows
+    const width = Math.min(maxWidth, 320);
+    // Account for: header (~70px), score bar (~35px), instructions (~20px), back button (~55px), bottom nav (~50px), padding (~30px)
+    const overhead = 260;
+    const availableHeight = screenHeight - overhead;
+    const height = Math.max(240, Math.min(availableHeight, 360));
+    const itemSize = 38;
+    const basketWidth = 60;
+    const basketHeight = 52;
+    return { width, height, itemSize, basketWidth, basketHeight };
   }
-  return { width: 350, height: 500 };
+  // Tablet
+  if (screenWidth < 1024) {
+    return { width: 350, height: 420, itemSize: 44, basketWidth: 72, basketHeight: 62 };
+  }
+  // Desktop
+  return { width: 380, height: 480, itemSize: 48, basketWidth: 78, basketHeight: 68 };
 };
-
-const ITEM_SIZE = 50;
-const CATCH_ZONE_HEIGHT = 80;
 
 export default function CatchGame({ onBack }: CatchGameProps) {
   const [score, setScore] = useState(0);
@@ -42,8 +53,8 @@ export default function CatchGame({ onBack }: CatchGameProps) {
   const [items, setItems] = useState<FallingItem[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [gameOver, setGameOver] = useState(false);
-  const [gameDimensions, setGameDimensions] = useState({ width: 320, height: 450 });
-  const [basketX, setBasketX] = useState(160 - 40);
+  const [gameDimensions, setGameDimensions] = useState({ width: 300, height: 340, itemSize: 38, basketWidth: 60, basketHeight: 52 });
+  const [basketX, setBasketX] = useState(160 - 35);
   const gameAreaRef = useRef<HTMLDivElement>(null);
   const itemIdRef = useRef(0);
   const animationRef = useRef<number | null>(null);
@@ -55,12 +66,20 @@ export default function CatchGame({ onBack }: CatchGameProps) {
     const updateDimensions = () => {
       const dims = getGameDimensions();
       setGameDimensions(dims);
-      setBasketX(dims.width / 2 - 40);
+      setBasketX(dims.width / 2 - dims.basketWidth / 2);
     };
     
     updateDimensions();
     window.addEventListener('resize', updateDimensions);
-    return () => window.removeEventListener('resize', updateDimensions);
+    // Also listen for orientation changes on mobile
+    window.addEventListener('orientationchange', () => {
+      // Small delay to let browser finish orientation change
+      setTimeout(updateDimensions, 100);
+    });
+    return () => {
+      window.removeEventListener('resize', updateDimensions);
+      window.removeEventListener('orientationchange', updateDimensions);
+    };
   }, []);
 
   // Load high score from localStorage
@@ -83,16 +102,17 @@ export default function CatchGame({ onBack }: CatchGameProps) {
 
   // Spawn new items
   const spawnItem = useCallback(() => {
-    const types: FallingItem["type"][] = ["cookie", "cupcake", "heart"];
+    const types: FallingItem["type"][] = ["cookie", "cupcake", "matcha"];
+    const { itemSize } = gameDimensions;
     const newItem: FallingItem = {
       id: itemIdRef.current++,
-      x: Math.random() * (gameDimensions.width - ITEM_SIZE),
-      y: -ITEM_SIZE,
+      x: Math.random() * (gameDimensions.width - itemSize),
+      y: -itemSize,
       type: types[Math.floor(Math.random() * types.length)],
       speed: 2 + Math.random() * 2 + Math.floor(score / 10) * 0.5, // Speed increases with score
     };
     setItems(prev => [...prev, newItem]);
-  }, [score, gameDimensions.width]);
+  }, [score, gameDimensions]);
 
   // Game loop
   const gameLoop = useCallback((timestamp: number) => {
@@ -109,22 +129,28 @@ export default function CatchGame({ onBack }: CatchGameProps) {
     setItems(prev => {
       const updated: FallingItem[] = [];
       let newLives = lives;
-      const gameHeight = gameDimensions.height;
+      const { height: gameHeight, itemSize, basketWidth, basketHeight } = gameDimensions;
 
       for (const item of prev) {
         const newY = item.y + item.speed;
 
-        // Check if caught (in catch zone and overlapping basket)
+        // Check if caught (item bottom reaches basket opening and overlaps basket horizontally)
         const basketLeft = basketX;
-        const basketRight = basketX + 80;
-        const itemCenter = item.x + ITEM_SIZE / 2;
-        const inCatchZone = newY + ITEM_SIZE >= gameHeight - CATCH_ZONE_HEIGHT;
+        const basketRight = basketX + basketWidth;
+        const itemCenter = item.x + itemSize / 2;
+        const itemBottom = newY + itemSize;
+        // The basket SVG has viewBox "0 0 80 60" with the opening at y=25
+        // So the opening is at 25/60 = ~42% from the top of the basket div
+        // The catch zone should start at the basket opening, not the top of the div
+        const basketOpeningOffset = basketHeight * 0.42;
+        const catchZoneTop = gameHeight - basketHeight + basketOpeningOffset;
+        const inCatchZone = itemBottom >= catchZoneTop;
         const inBasket = itemCenter >= basketLeft && itemCenter <= basketRight;
 
-        if (inCatchZone && inBasket && newY < gameHeight) {
+        if (inCatchZone && inBasket && itemBottom <= gameHeight) {
           // Caught!
           playCatchSound();
-          setScore(s => s + (item.type === "heart" ? 3 : 1));
+          setScore(s => s + (item.type === "matcha" ? 3 : 1));
           continue; // Don't add to updated
         }
 
@@ -169,9 +195,10 @@ export default function CatchGame({ onBack }: CatchGameProps) {
   const handleMove = useCallback((clientX: number) => {
     if (!gameAreaRef.current || !isPlaying) return;
     const rect = gameAreaRef.current.getBoundingClientRect();
-    const x = clientX - rect.left - 40; // Center basket on cursor
-    setBasketX(Math.max(0, Math.min(gameDimensions.width - 80, x)));
-  }, [isPlaying, gameDimensions.width]);
+    const { basketWidth } = gameDimensions;
+    const x = clientX - rect.left - basketWidth / 2; // Center basket on cursor/touch
+    setBasketX(Math.max(0, Math.min(gameDimensions.width - basketWidth, x)));
+  }, [isPlaying, gameDimensions]);
 
   const handleMouseMove = useCallback((e: React.MouseEvent) => {
     handleMove(e.clientX);
@@ -189,10 +216,10 @@ export default function CatchGame({ onBack }: CatchGameProps) {
     setItems([]);
     setGameOver(false);
     setIsPlaying(true);
-    setBasketX(gameDimensions.width / 2 - 40);
+    setBasketX(gameDimensions.width / 2 - gameDimensions.basketWidth / 2);
     lastSpawnRef.current = 0;
     itemIdRef.current = 0;
-  }, [gameDimensions.width]);
+  }, [gameDimensions]);
 
   // Celebrate high score
   useEffect(() => {
@@ -205,33 +232,33 @@ export default function CatchGame({ onBack }: CatchGameProps) {
     switch (type) {
       case "cookie": return "🍪";
       case "cupcake": return "🧁";
-      case "heart": return "💖";
+      case "matcha": return "🍵";
     }
   };
 
   return (
     <div className="scrapbook-page paper-texture relative overflow-hidden">
-      <div className="relative z-10 w-full max-w-lg mx-auto px-4 text-center">
+      <div className="relative z-10 w-full max-w-md mx-auto px-4 text-center flex flex-col items-center justify-center min-h-full">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-4"
+          className="mb-2 sm:mb-4"
         >
-          <h2 className="font-handwritten text-3xl sm:text-4xl text-brown mb-1">
+          <h2 className="font-handwritten text-2xl sm:text-4xl text-brown mb-0.5 sm:mb-1">
             Catch the Cookies! 🍪
           </h2>
-          <p className="font-body text-brown-light text-xs">
+          <p className="font-body text-brown-light text-[10px] sm:text-xs">
             Secret game unlocked!
           </p>
         </motion.div>
 
         {/* Score and lives */}
-        <div className="flex justify-between items-center mb-3 px-4">
-          <div className="font-body text-brown">
+        <div className="flex justify-between items-center mb-2 sm:mb-3 px-2 sm:px-4">
+          <div className="font-body text-brown text-sm sm:text-base">
             Score: <span className="font-semibold text-blush">{score}</span>
           </div>
-          <div className="font-body text-brown">
+          <div className="font-body text-brown text-sm sm:text-base">
             {[...Array(3)].map((_, i) => (
               <span key={i} className={i < lives ? "opacity-100" : "opacity-30"}>
                 ❤️
@@ -245,8 +272,8 @@ export default function CatchGame({ onBack }: CatchGameProps) {
           ref={gameAreaRef}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="relative mx-auto bg-cream/50 rounded-2xl overflow-hidden shadow-lg border-2 border-brown-light/20 touch-none select-none"
-          style={{ width: gameDimensions.width, height: gameDimensions.height }}
+          className="relative bg-cream/50 rounded-2xl overflow-hidden shadow-lg border-2 border-brown-light/20 touch-none select-none"
+          style={{ width: gameDimensions.width, height: gameDimensions.height, margin: '0 auto' }}
           onMouseMove={handleMouseMove}
           onTouchMove={handleTouchMove}
           onTouchStart={(e) => {
@@ -263,12 +290,13 @@ export default function CatchGame({ onBack }: CatchGameProps) {
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0 }}
-                className="absolute text-4xl"
+                className="absolute flex items-center justify-center"
                 style={{
                   left: item.x,
                   top: item.y,
-                  width: ITEM_SIZE,
-                  height: ITEM_SIZE,
+                  width: gameDimensions.itemSize,
+                  height: gameDimensions.itemSize,
+                  fontSize: `${gameDimensions.itemSize * 0.8}px`,
                 }}
               >
                 {getItemEmoji(item.type)}
@@ -279,11 +307,11 @@ export default function CatchGame({ onBack }: CatchGameProps) {
           {/* Basket/catcher */}
           <motion.div
             className="absolute bottom-0 pointer-events-none"
-            style={{ left: basketX, width: 80, height: CATCH_ZONE_HEIGHT }}
+            style={{ left: basketX, width: gameDimensions.basketWidth, height: gameDimensions.basketHeight }}
             animate={{ x: 0 }}
             transition={{ type: "spring", stiffness: 500, damping: 30 }}
           >
-            <svg viewBox="0 0 80 60" className="w-full h-full drop-shadow-md">
+            <svg viewBox="0 0 80 60" className="w-full h-full drop-shadow-md" preserveAspectRatio="xMidYMid meet">
               {/* Basket */}
               <ellipse cx="40" cy="50" rx="38" ry="8" fill="#D4A574" />
               <path 
@@ -305,39 +333,39 @@ export default function CatchGame({ onBack }: CatchGameProps) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="absolute inset-0 bg-cream/90 flex flex-col items-center justify-center"
+                className="absolute inset-0 bg-cream/90 flex flex-col items-center justify-center px-4"
               >
                 {gameOver ? (
                   <>
                     <motion.p
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
-                      className="font-handwritten text-4xl text-blush mb-2"
+                      className="font-handwritten text-3xl sm:text-4xl text-blush mb-2"
                     >
                       Game Over!
                     </motion.p>
-                    <p className="font-body text-brown mb-1">
+                    <p className="font-body text-brown text-sm sm:text-base mb-1">
                       Score: <span className="font-semibold">{score}</span>
                     </p>
                     {score === highScore && score > 0 && (
-                      <p className="font-body text-sage text-sm mb-4">
+                      <p className="font-body text-sage text-xs sm:text-sm mb-3 sm:mb-4">
                         New high score! 🎉
                       </p>
                     )}
-                    <p className="font-body text-brown-light text-sm mb-4">
+                    <p className="font-body text-brown-light text-xs sm:text-sm mb-3 sm:mb-4">
                       High Score: {highScore}
                     </p>
                   </>
                 ) : (
                   <>
-                    <p className="font-handwritten text-2xl text-brown mb-2">
+                    <p className="font-handwritten text-xl sm:text-2xl text-brown mb-2 text-center">
                       Move to catch falling treats!
                     </p>
-                    <p className="font-body text-brown-light text-sm mb-4">
-                      💖 Hearts = 3 points
+                    <p className="font-body text-brown-light text-xs sm:text-sm mb-3 sm:mb-4">
+                      🍵 Matcha = 3 points
                     </p>
                     {highScore > 0 && (
-                      <p className="font-body text-brown-light text-xs mb-4">
+                      <p className="font-body text-brown-light text-[10px] sm:text-xs mb-3 sm:mb-4">
                         High Score: {highScore}
                       </p>
                     )}
@@ -347,7 +375,7 @@ export default function CatchGame({ onBack }: CatchGameProps) {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={startGame}
-                  className="px-6 py-3 bg-blush text-white font-body font-semibold rounded-full shadow-lg hover:shadow-xl transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2"
+                  className="px-5 py-2.5 sm:px-6 sm:py-3 bg-blush text-white font-body font-semibold rounded-full shadow-lg hover:shadow-xl transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2 text-sm sm:text-base"
                 >
                   {gameOver ? "Play Again" : "Start Game"}
                 </motion.button>
@@ -361,9 +389,9 @@ export default function CatchGame({ onBack }: CatchGameProps) {
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.6 }}
-            className="font-body text-xs text-brown-light mt-2"
+            className="font-body text-[10px] sm:text-xs text-brown-light mt-1.5 sm:mt-2"
           >
-            Move your mouse or finger to catch!
+            Move your finger to catch!
           </motion.p>
         )}
 
@@ -375,7 +403,7 @@ export default function CatchGame({ onBack }: CatchGameProps) {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={onBack}
-          className="mt-4 px-6 py-3 bg-brown-light/20 text-brown font-body font-semibold rounded-full shadow-md hover:shadow-lg hover:bg-brown-light/30 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brown focus-visible:ring-offset-2"
+          className="mt-3 sm:mt-4 mb-2 px-5 py-2.5 sm:px-6 sm:py-3 bg-brown-light/20 text-brown font-body font-semibold rounded-full shadow-md hover:shadow-lg hover:bg-brown-light/30 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brown focus-visible:ring-offset-2 text-sm sm:text-base"
         >
           Back to Games
         </motion.button>

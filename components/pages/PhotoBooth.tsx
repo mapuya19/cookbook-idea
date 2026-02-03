@@ -9,14 +9,43 @@ interface PhotoBoothProps {
   onPrev: () => void;
 }
 
-type FrameType = "hearts" | "cookies" | "banner" | "none";
+type FrameType = "purikura" | "hearts" | "cookies" | "minimal" | "none";
+type FilterType = "normal" | "soft-glow" | "vintage" | "matcha" | "pink";
+
+// Filter configurations for CSS preview and canvas capture
+const FILTERS: Record<FilterType, { css: string; label: string; icon: string }> = {
+  normal: { css: "", label: "Normal", icon: "📷" },
+  "soft-glow": { css: "brightness(1.08) contrast(0.92) saturate(1.1)", label: "Soft Glow", icon: "✨" },
+  vintage: { css: "sepia(0.2) saturate(1.15) brightness(1.05) contrast(0.95)", label: "Vintage", icon: "🎞️" },
+  matcha: { css: "saturate(0.9) brightness(1.05) hue-rotate(15deg)", label: "Matcha", icon: "🌿" },
+  pink: { css: "saturate(1.1) brightness(1.08) hue-rotate(-10deg)", label: "Soft Pink", icon: "🌸" },
+};
+
+// Frame decoration positions for purikura style
+const PURIKURA_DECORATIONS = [
+  // Top edge
+  { emoji: "✨", x: 0.1, y: 0.02, size: 18 },
+  { emoji: "💕", x: 0.25, y: 0.01, size: 22 },
+  { emoji: "🌸", x: 0.5, y: 0.02, size: 20 },
+  { emoji: "⭐", x: 0.75, y: 0.01, size: 18 },
+  { emoji: "✨", x: 0.9, y: 0.02, size: 16 },
+  // Left edge
+  { emoji: "🍪", x: 0.02, y: 0.25, size: 18 },
+  { emoji: "💕", x: 0.01, y: 0.5, size: 20 },
+  { emoji: "🌸", x: 0.02, y: 0.75, size: 18 },
+  // Right edge
+  { emoji: "⭐", x: 0.98, y: 0.25, size: 16 },
+  { emoji: "✨", x: 0.99, y: 0.5, size: 18 },
+  { emoji: "💕", x: 0.98, y: 0.75, size: 20 },
+];
 
 export default function PhotoBooth({ onNext }: PhotoBoothProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
-  const [selectedFrame, setSelectedFrame] = useState<FrameType>("hearts");
+  const [selectedFrame, setSelectedFrame] = useState<FrameType>("purikura");
+  const [selectedFilter, setSelectedFilter] = useState<FilterType>("soft-glow");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [countdown, setCountdown] = useState<number | null>(null);
@@ -95,79 +124,203 @@ export default function PhotoBooth({ onNext }: PhotoBoothProps) {
     };
   }, [stream]);
 
-  // Draw frame overlay on canvas
+  // Helper to draw emoji on canvas
+  const drawEmoji = useCallback((ctx: CanvasRenderingContext2D, emoji: string, x: number, y: number, size: number) => {
+    ctx.font = `${size}px Arial`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(emoji, x, y);
+  }, []);
+
+  // Get current date formatted for purikura stamp
+  const getDateStamp = useCallback(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, "0");
+    const day = String(now.getDate()).padStart(2, "0");
+    return `${year}.${month}.${day}`;
+  }, []);
+
+  // Draw frame overlay on canvas - using emojis to match preview
   const drawFrame = useCallback((ctx: CanvasRenderingContext2D, width: number, height: number, frame: FrameType) => {
     ctx.save();
     
     switch (frame) {
-      case "hearts":
-        // Heart border corners
-        const heartSize = 40;
-        const positions = [
-          { x: 20, y: 20, rot: -15 },
-          { x: width - 60, y: 20, rot: 15 },
-          { x: 20, y: height - 60, rot: -30 },
-          { x: width - 60, y: height - 60, rot: 30 },
-          { x: width / 2 - 20, y: 15, rot: 0 },
-          { x: width / 2 - 20, y: height - 55, rot: 0 },
-        ];
+      case "purikura":
+        // Full purikura-style frame with cream border
+        const borderWidth = Math.min(width, height) * 0.05;
+        const bottomStripHeight = Math.min(width, height) * 0.12;
         
-        ctx.fillStyle = "#F4A5AE";
-        positions.forEach(pos => {
-          ctx.save();
-          ctx.translate(pos.x + heartSize / 2, pos.y + heartSize / 2);
-          ctx.rotate((pos.rot * Math.PI) / 180);
-          ctx.beginPath();
-          // Heart shape
-          ctx.moveTo(0, heartSize * 0.3);
-          ctx.bezierCurveTo(-heartSize * 0.5, -heartSize * 0.3, -heartSize * 0.5, heartSize * 0.1, 0, heartSize * 0.5);
-          ctx.bezierCurveTo(heartSize * 0.5, heartSize * 0.1, heartSize * 0.5, -heartSize * 0.3, 0, heartSize * 0.3);
-          ctx.fill();
-          ctx.restore();
+        // Draw cream/white border frame
+        ctx.fillStyle = "#F5F5F0";
+        // Top border
+        ctx.fillRect(0, 0, width, borderWidth);
+        // Bottom border (taller for text)
+        ctx.fillRect(0, height - bottomStripHeight, width, bottomStripHeight);
+        // Left border
+        ctx.fillRect(0, 0, borderWidth, height);
+        // Right border
+        ctx.fillRect(width - borderWidth, 0, borderWidth, height);
+        
+        // Add subtle inner shadow/border
+        ctx.strokeStyle = "rgba(123, 158, 108, 0.3)";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(borderWidth - 1, borderWidth - 1, width - borderWidth * 2 + 2, height - bottomStripHeight - borderWidth + 2);
+        
+        // Draw scattered decorations along border
+        PURIKURA_DECORATIONS.forEach(dec => {
+          const decX = dec.x * width;
+          const decY = dec.y * height;
+          const scaledSize = dec.size * (width / 400); // Scale based on canvas size
+          drawEmoji(ctx, dec.emoji, decX, decY, scaledSize);
         });
+        
+        // Bottom strip with date and text
+        ctx.fillStyle = "#6B5B4F";
+        ctx.font = `bold ${Math.floor(width * 0.04)}px Arial, sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(`Baked with Love 💕 ${getDateStamp()}`, width / 2, height - bottomStripHeight / 2);
+        
+        // Add corner sparkles
+        const cornerSize = Math.floor(width * 0.06);
+        drawEmoji(ctx, "✨", borderWidth / 2, borderWidth / 2, cornerSize);
+        drawEmoji(ctx, "✨", width - borderWidth / 2, borderWidth / 2, cornerSize);
+        break;
+        
+      case "hearts":
+        // Pink/rose border with hearts - purikura style
+        const heartBorderWidth = Math.min(width, height) * 0.05;
+        const heartBottomStrip = Math.min(width, height) * 0.12;
+        
+        // Draw pink border frame
+        ctx.fillStyle = "#FADADD";
+        ctx.fillRect(0, 0, width, heartBorderWidth);
+        ctx.fillRect(0, height - heartBottomStrip, width, heartBottomStrip);
+        ctx.fillRect(0, 0, heartBorderWidth, height);
+        ctx.fillRect(width - heartBorderWidth, 0, heartBorderWidth, height);
+        
+        // Inner accent border
+        ctx.strokeStyle = "rgba(219, 112, 147, 0.4)";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(heartBorderWidth - 1, heartBorderWidth - 1, width - heartBorderWidth * 2 + 2, height - heartBottomStrip - heartBorderWidth + 2);
+        
+        // Heart decorations around border
+        const heartDecorations = [
+          // Top
+          { emoji: "💕", x: 0.08, y: 0.02 }, { emoji: "💗", x: 0.25, y: 0.02 },
+          { emoji: "💕", x: 0.5, y: 0.02 }, { emoji: "💗", x: 0.75, y: 0.02 },
+          { emoji: "💕", x: 0.92, y: 0.02 },
+          // Left
+          { emoji: "💗", x: 0.02, y: 0.2 }, { emoji: "💕", x: 0.02, y: 0.4 },
+          { emoji: "💗", x: 0.02, y: 0.6 }, { emoji: "💕", x: 0.02, y: 0.8 },
+          // Right
+          { emoji: "💕", x: 0.98, y: 0.2 }, { emoji: "💗", x: 0.98, y: 0.4 },
+          { emoji: "💕", x: 0.98, y: 0.6 }, { emoji: "💗", x: 0.98, y: 0.8 },
+          // Corners
+          { emoji: "💖", x: 0.02, y: 0.02 }, { emoji: "💖", x: 0.98, y: 0.02 },
+        ];
+        const heartEmojiSize = Math.floor(width * 0.05);
+        heartDecorations.forEach(dec => {
+          drawEmoji(ctx, dec.emoji, dec.x * width, dec.y * height, heartEmojiSize);
+        });
+        
+        // Bottom strip text
+        ctx.fillStyle = "#DB7093";
+        ctx.font = `bold ${Math.floor(width * 0.04)}px Arial, sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(`💕 With Love 💕 ${getDateStamp()}`, width / 2, height - heartBottomStrip / 2);
         break;
         
       case "cookies":
-        // Cookie corners
-        const cookiePositions = [
-          { x: 15, y: 15 },
-          { x: width - 55, y: 15 },
-          { x: 15, y: height - 55 },
-          { x: width - 55, y: height - 55 },
+        // Cookie tan border with cookies - purikura style
+        const cookieBorderWidth = Math.min(width, height) * 0.05;
+        const cookieBottomStrip = Math.min(width, height) * 0.12;
+        
+        // Draw tan/wheat border frame
+        ctx.fillStyle = "#F5DEB3";
+        ctx.fillRect(0, 0, width, cookieBorderWidth);
+        ctx.fillRect(0, height - cookieBottomStrip, width, cookieBottomStrip);
+        ctx.fillRect(0, 0, cookieBorderWidth, height);
+        ctx.fillRect(width - cookieBorderWidth, 0, cookieBorderWidth, height);
+        
+        // Inner accent border
+        ctx.strokeStyle = "rgba(139, 90, 43, 0.3)";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(cookieBorderWidth - 1, cookieBorderWidth - 1, width - cookieBorderWidth * 2 + 2, height - cookieBottomStrip - cookieBorderWidth + 2);
+        
+        // Cookie decorations around border
+        const cookieDecorations = [
+          // Top
+          { emoji: "🍪", x: 0.1, y: 0.02 }, { emoji: "✨", x: 0.3, y: 0.02 },
+          { emoji: "🍪", x: 0.5, y: 0.02 }, { emoji: "✨", x: 0.7, y: 0.02 },
+          { emoji: "🍪", x: 0.9, y: 0.02 },
+          // Left
+          { emoji: "🍪", x: 0.02, y: 0.25 }, { emoji: "✨", x: 0.02, y: 0.5 },
+          { emoji: "🍪", x: 0.02, y: 0.75 },
+          // Right
+          { emoji: "✨", x: 0.98, y: 0.25 }, { emoji: "🍪", x: 0.98, y: 0.5 },
+          { emoji: "✨", x: 0.98, y: 0.75 },
+          // Corners
+          { emoji: "🍪", x: 0.02, y: 0.02 }, { emoji: "🍪", x: 0.98, y: 0.02 },
         ];
-        
-        cookiePositions.forEach(pos => {
-          // Cookie base
-          ctx.fillStyle = "#E8C9A0";
-          ctx.beginPath();
-          ctx.arc(pos.x + 20, pos.y + 20, 20, 0, Math.PI * 2);
-          ctx.fill();
-          
-          // Chocolate chips
-          ctx.fillStyle = "#5D4037";
-          ctx.beginPath();
-          ctx.arc(pos.x + 15, pos.y + 15, 4, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.beginPath();
-          ctx.arc(pos.x + 28, pos.y + 18, 3, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.beginPath();
-          ctx.arc(pos.x + 20, pos.y + 28, 4, 0, Math.PI * 2);
-          ctx.fill();
+        const cookieEmojiSize = Math.floor(width * 0.05);
+        cookieDecorations.forEach(dec => {
+          drawEmoji(ctx, dec.emoji, dec.x * width, dec.y * height, cookieEmojiSize);
         });
-        break;
         
-      case "banner":
-        // "Baked with Love" banner at bottom
-        const bannerHeight = 50;
-        ctx.fillStyle = "rgba(244, 165, 174, 0.9)";
-        ctx.fillRect(0, height - bannerHeight, width, bannerHeight);
-        
-        ctx.fillStyle = "#FFFFFF";
-        ctx.font = "bold 24px 'Caveat', cursive";
+        // Bottom strip text
+        ctx.fillStyle = "#8B5A2B";
+        ctx.font = `bold ${Math.floor(width * 0.04)}px Arial, sans-serif`;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText("Baked with Love 💕", width / 2, height - bannerHeight / 2);
+        ctx.fillText(`🍪 Fresh Baked 🍪 ${getDateStamp()}`, width / 2, height - cookieBottomStrip / 2);
+        break;
+        
+      case "minimal":
+        // Matcha green border - purikura style
+        const matchaBorderWidth = Math.min(width, height) * 0.05;
+        const matchaBottomStrip = Math.min(width, height) * 0.12;
+        
+        // Draw matcha green border frame
+        ctx.fillStyle = "#A8C69F";
+        ctx.fillRect(0, 0, width, matchaBorderWidth);
+        ctx.fillRect(0, height - matchaBottomStrip, width, matchaBottomStrip);
+        ctx.fillRect(0, 0, matchaBorderWidth, height);
+        ctx.fillRect(width - matchaBorderWidth, 0, matchaBorderWidth, height);
+        
+        // Inner accent border
+        ctx.strokeStyle = "rgba(90, 122, 76, 0.4)";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(matchaBorderWidth - 1, matchaBorderWidth - 1, width - matchaBorderWidth * 2 + 2, height - matchaBottomStrip - matchaBorderWidth + 2);
+        
+        // Matcha decorations around border
+        const matchaDecorations = [
+          // Top
+          { emoji: "🍵", x: 0.1, y: 0.02 }, { emoji: "🌿", x: 0.25, y: 0.02 },
+          { emoji: "🍃", x: 0.5, y: 0.02 }, { emoji: "🌿", x: 0.75, y: 0.02 },
+          { emoji: "🍵", x: 0.9, y: 0.02 },
+          // Left
+          { emoji: "🌿", x: 0.02, y: 0.25 }, { emoji: "🍃", x: 0.02, y: 0.5 },
+          { emoji: "🌿", x: 0.02, y: 0.75 },
+          // Right
+          { emoji: "🍃", x: 0.98, y: 0.25 }, { emoji: "🌿", x: 0.98, y: 0.5 },
+          { emoji: "🍃", x: 0.98, y: 0.75 },
+          // Corners
+          { emoji: "🍵", x: 0.02, y: 0.02 }, { emoji: "🍵", x: 0.98, y: 0.02 },
+        ];
+        const matchaEmojiSize = Math.floor(width * 0.05);
+        matchaDecorations.forEach(dec => {
+          drawEmoji(ctx, dec.emoji, dec.x * width, dec.y * height, matchaEmojiSize);
+        });
+        
+        // Bottom strip text
+        ctx.fillStyle = "#3D5A3A";
+        ctx.font = `bold ${Math.floor(width * 0.04)}px Arial, sans-serif`;
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(`🍃 Matcha Moments 🍃 ${getDateStamp()}`, width / 2, height - matchaBottomStrip / 2);
         break;
         
       case "none":
@@ -176,6 +329,52 @@ export default function PhotoBooth({ onNext }: PhotoBoothProps) {
     }
     
     ctx.restore();
+  }, [drawEmoji, getDateStamp]);
+
+  // Apply filter to canvas
+  const applyFilter = useCallback((ctx: CanvasRenderingContext2D, width: number, height: number, filter: FilterType) => {
+    if (filter === "normal") return;
+    
+    const imageData = ctx.getImageData(0, 0, width, height);
+    const data = imageData.data;
+    
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+      
+      switch (filter) {
+        case "soft-glow":
+          // Brighten and reduce contrast slightly
+          data[i] = Math.min(255, r * 1.08);
+          data[i + 1] = Math.min(255, g * 1.08);
+          data[i + 2] = Math.min(255, b * 1.08);
+          break;
+          
+        case "vintage":
+          // Sepia-like warm tone
+          data[i] = Math.min(255, r * 1.1 + 20);
+          data[i + 1] = Math.min(255, g * 1.0 + 10);
+          data[i + 2] = Math.min(255, b * 0.9);
+          break;
+          
+        case "matcha":
+          // Slight green tint
+          data[i] = Math.min(255, r * 0.95);
+          data[i + 1] = Math.min(255, g * 1.08);
+          data[i + 2] = Math.min(255, b * 0.95);
+          break;
+          
+        case "pink":
+          // Soft pink/warm tint
+          data[i] = Math.min(255, r * 1.1);
+          data[i + 1] = Math.min(255, g * 1.0);
+          data[i + 2] = Math.min(255, b * 1.05);
+          break;
+      }
+    }
+    
+    ctx.putImageData(imageData, 0, 0);
   }, []);
 
   // Take photo with countdown
@@ -210,6 +409,9 @@ export default function PhotoBooth({ onNext }: PhotoBoothProps) {
     ctx.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
     ctx.restore();
     
+    // Apply selected filter to the image
+    applyFilter(ctx, canvas.width, canvas.height, selectedFilter);
+    
     // Draw selected frame overlay
     drawFrame(ctx, canvas.width, canvas.height, selectedFrame);
     
@@ -217,7 +419,7 @@ export default function PhotoBooth({ onNext }: PhotoBoothProps) {
     const photoUrl = canvas.toDataURL("image/png");
     setCapturedPhoto(photoUrl);
     stopCamera();
-  }, [selectedFrame, drawFrame, stopCamera]);
+  }, [selectedFrame, selectedFilter, drawFrame, applyFilter, stopCamera]);
 
   // Retake photo
   const retakePhoto = useCallback(() => {
@@ -236,11 +438,23 @@ export default function PhotoBooth({ onNext }: PhotoBoothProps) {
   }, [capturedPhoto]);
 
   const frames: { type: FrameType; label: string; icon: string }[] = [
+    { type: "purikura", label: "Purikura", icon: "🎀" },
     { type: "hearts", label: "Hearts", icon: "💕" },
     { type: "cookies", label: "Cookies", icon: "🍪" },
-    { type: "banner", label: "Banner", icon: "🎀" },
+    { type: "minimal", label: "Matcha", icon: "🍵" },
     { type: "none", label: "None", icon: "📷" },
   ];
+
+  const filters: { type: FilterType; label: string; icon: string }[] = [
+    { type: "normal", label: "Normal", icon: "📷" },
+    { type: "soft-glow", label: "Soft Glow", icon: "✨" },
+    { type: "vintage", label: "Vintage", icon: "🎞️" },
+    { type: "matcha", label: "Matcha", icon: "🌿" },
+    { type: "pink", label: "Pink", icon: "🌸" },
+  ];
+
+  // Get current date for preview
+  const dateStamp = getDateStamp();
 
   return (
     <div className="scrapbook-page paper-texture relative overflow-hidden">
@@ -337,32 +551,159 @@ export default function PhotoBooth({ onNext }: PhotoBoothProps) {
                 // iOS Safari requires webkit-playsinline attribute
                 {...{ 'webkit-playsinline': 'true' } as React.VideoHTMLAttributes<HTMLVideoElement>}
                 className="w-full h-full object-cover"
-                style={{ transform: "scaleX(-1)" }} // Mirror for selfie
+                style={{ 
+                  transform: "scaleX(-1)", // Mirror for selfie
+                  filter: FILTERS[selectedFilter].css || "none",
+                }}
               />
               {/* Frame overlay preview */}
-              <div className="absolute inset-0 pointer-events-none">
+              <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                {/* Purikura frame - full border with decorations */}
+                {selectedFrame === "purikura" && (
+                  <>
+                    {/* Cream border frame */}
+                    <div 
+                      className="absolute inset-0 rounded-lg"
+                      style={{
+                        boxShadow: "inset 0 0 0 12px #F5F5F0, inset 0 0 0 14px rgba(123, 158, 108, 0.3)",
+                      }}
+                    />
+                    {/* Top decorations */}
+                    <span className="absolute top-1 left-[10%] text-sm sm:text-base drop-shadow-sm">✨</span>
+                    <span className="absolute top-0 left-[25%] text-base sm:text-lg drop-shadow-sm">💕</span>
+                    <span className="absolute top-1 left-1/2 -translate-x-1/2 text-base sm:text-lg drop-shadow-sm">🌸</span>
+                    <span className="absolute top-0 right-[25%] text-sm sm:text-base drop-shadow-sm">⭐</span>
+                    <span className="absolute top-1 right-[10%] text-sm drop-shadow-sm">✨</span>
+                    {/* Side decorations */}
+                    <span className="absolute top-[25%] left-0 text-sm sm:text-base drop-shadow-sm">🍪</span>
+                    <span className="absolute top-1/2 -translate-y-1/2 left-0 text-base sm:text-lg drop-shadow-sm">💕</span>
+                    <span className="absolute top-[75%] left-0 text-sm sm:text-base drop-shadow-sm">🌸</span>
+                    <span className="absolute top-[25%] right-0 text-sm drop-shadow-sm">⭐</span>
+                    <span className="absolute top-1/2 -translate-y-1/2 right-0 text-sm sm:text-base drop-shadow-sm">✨</span>
+                    <span className="absolute top-[75%] right-0 text-base sm:text-lg drop-shadow-sm">💕</span>
+                    {/* Corner sparkles */}
+                    <span className="absolute top-0 left-0 text-lg sm:text-xl drop-shadow-sm">✨</span>
+                    <span className="absolute top-0 right-0 text-lg sm:text-xl drop-shadow-sm">✨</span>
+                    {/* Bottom strip with date */}
+                    <div className="absolute bottom-0 left-0 right-0 h-[14%] bg-cream flex items-center justify-center">
+                      <span className="font-body text-xs sm:text-sm text-brown font-semibold">
+                        Baked with Love 💕 {dateStamp}
+                      </span>
+                    </div>
+                  </>
+                )}
+                {/* Hearts frame - pink/rose border with hearts */}
                 {selectedFrame === "hearts" && (
                   <>
-                    <span className="absolute top-3 left-3 text-3xl -rotate-12">💕</span>
-                    <span className="absolute top-3 right-3 text-3xl rotate-12">💕</span>
-                    <span className="absolute top-3 left-1/2 -translate-x-1/2 text-3xl">💕</span>
-                    <span className="absolute bottom-3 left-3 text-3xl -rotate-[30deg]">💕</span>
-                    <span className="absolute bottom-3 right-3 text-3xl rotate-[30deg]">💕</span>
-                    <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-3xl">💕</span>
+                    {/* Pink border frame */}
+                    <div 
+                      className="absolute inset-0 rounded-lg"
+                      style={{
+                        boxShadow: "inset 0 0 0 12px #FADADD, inset 0 0 0 14px rgba(219, 112, 147, 0.4)",
+                      }}
+                    />
+                    {/* Top decorations */}
+                    <span className="absolute top-0 left-[8%] text-base sm:text-lg drop-shadow-sm">💕</span>
+                    <span className="absolute top-1 left-[25%] text-sm sm:text-base drop-shadow-sm">💗</span>
+                    <span className="absolute top-0 left-1/2 -translate-x-1/2 text-lg sm:text-xl drop-shadow-sm">💕</span>
+                    <span className="absolute top-1 right-[25%] text-sm sm:text-base drop-shadow-sm">💗</span>
+                    <span className="absolute top-0 right-[8%] text-base sm:text-lg drop-shadow-sm">💕</span>
+                    {/* Side decorations */}
+                    <span className="absolute top-[20%] left-0 text-sm sm:text-base drop-shadow-sm">💗</span>
+                    <span className="absolute top-[40%] left-0 text-base sm:text-lg drop-shadow-sm">💕</span>
+                    <span className="absolute top-[60%] left-0 text-sm sm:text-base drop-shadow-sm">💗</span>
+                    <span className="absolute top-[80%] left-0 text-base sm:text-lg drop-shadow-sm">💕</span>
+                    <span className="absolute top-[20%] right-0 text-base sm:text-lg drop-shadow-sm">💕</span>
+                    <span className="absolute top-[40%] right-0 text-sm sm:text-base drop-shadow-sm">💗</span>
+                    <span className="absolute top-[60%] right-0 text-base sm:text-lg drop-shadow-sm">💕</span>
+                    <span className="absolute top-[80%] right-0 text-sm sm:text-base drop-shadow-sm">💗</span>
+                    {/* Corner hearts */}
+                    <span className="absolute top-0 left-0 text-lg sm:text-xl drop-shadow-sm">💖</span>
+                    <span className="absolute top-0 right-0 text-lg sm:text-xl drop-shadow-sm">💖</span>
+                    {/* Bottom strip with date */}
+                    <div 
+                      className="absolute bottom-0 left-0 right-0 h-[14%] flex items-center justify-center"
+                      style={{ backgroundColor: "#FADADD" }}
+                    >
+                      <span className="font-body text-xs sm:text-sm font-semibold" style={{ color: "#DB7093" }}>
+                        💕 With Love 💕 {dateStamp}
+                      </span>
+                    </div>
                   </>
                 )}
+                {/* Cookies frame - warm cookie/tan border with cookies */}
                 {selectedFrame === "cookies" && (
                   <>
-                    <span className="absolute top-2 left-2 text-3xl">🍪</span>
-                    <span className="absolute top-2 right-2 text-3xl">🍪</span>
-                    <span className="absolute bottom-2 left-2 text-3xl">🍪</span>
-                    <span className="absolute bottom-2 right-2 text-3xl">🍪</span>
+                    {/* Cookie tan border frame */}
+                    <div 
+                      className="absolute inset-0 rounded-lg"
+                      style={{
+                        boxShadow: "inset 0 0 0 12px #F5DEB3, inset 0 0 0 14px rgba(139, 90, 43, 0.3)",
+                      }}
+                    />
+                    {/* Top decorations */}
+                    <span className="absolute top-0 left-[10%] text-base sm:text-lg drop-shadow-sm">🍪</span>
+                    <span className="absolute top-1 left-[30%] text-sm sm:text-base drop-shadow-sm">✨</span>
+                    <span className="absolute top-0 left-1/2 -translate-x-1/2 text-lg sm:text-xl drop-shadow-sm">🍪</span>
+                    <span className="absolute top-1 right-[30%] text-sm sm:text-base drop-shadow-sm">✨</span>
+                    <span className="absolute top-0 right-[10%] text-base sm:text-lg drop-shadow-sm">🍪</span>
+                    {/* Side decorations */}
+                    <span className="absolute top-[25%] left-0 text-base sm:text-lg drop-shadow-sm">🍪</span>
+                    <span className="absolute top-1/2 -translate-y-1/2 left-0 text-sm sm:text-base drop-shadow-sm">✨</span>
+                    <span className="absolute top-[75%] left-0 text-base sm:text-lg drop-shadow-sm">🍪</span>
+                    <span className="absolute top-[25%] right-0 text-sm sm:text-base drop-shadow-sm">✨</span>
+                    <span className="absolute top-1/2 -translate-y-1/2 right-0 text-base sm:text-lg drop-shadow-sm">🍪</span>
+                    <span className="absolute top-[75%] right-0 text-sm sm:text-base drop-shadow-sm">✨</span>
+                    {/* Corner cookies */}
+                    <span className="absolute top-0 left-0 text-lg sm:text-xl drop-shadow-sm">🍪</span>
+                    <span className="absolute top-0 right-0 text-lg sm:text-xl drop-shadow-sm">🍪</span>
+                    {/* Bottom strip with date */}
+                    <div 
+                      className="absolute bottom-0 left-0 right-0 h-[14%] flex items-center justify-center"
+                      style={{ backgroundColor: "#F5DEB3" }}
+                    >
+                      <span className="font-body text-xs sm:text-sm font-semibold" style={{ color: "#8B5A2B" }}>
+                        🍪 Fresh Baked 🍪 {dateStamp}
+                      </span>
+                    </div>
                   </>
                 )}
-                {selectedFrame === "banner" && (
-                  <div className="absolute bottom-0 left-0 right-0 bg-blush/90 py-2 text-center">
-                    <span className="font-handwritten text-xl text-white">Baked with Love 💕</span>
-                  </div>
+                {/* Minimal/Matcha frame - matcha green border */}
+                {selectedFrame === "minimal" && (
+                  <>
+                    {/* Matcha green border frame */}
+                    <div 
+                      className="absolute inset-0 rounded-lg"
+                      style={{
+                        boxShadow: "inset 0 0 0 12px #A8C69F, inset 0 0 0 14px rgba(90, 122, 76, 0.4)",
+                      }}
+                    />
+                    {/* Top decorations */}
+                    <span className="absolute top-0 left-[10%] text-sm sm:text-base drop-shadow-sm">🍵</span>
+                    <span className="absolute top-1 left-[25%] text-base sm:text-lg drop-shadow-sm">🌿</span>
+                    <span className="absolute top-0 left-1/2 -translate-x-1/2 text-lg sm:text-xl drop-shadow-sm">🍃</span>
+                    <span className="absolute top-1 right-[25%] text-base sm:text-lg drop-shadow-sm">🌿</span>
+                    <span className="absolute top-0 right-[10%] text-sm sm:text-base drop-shadow-sm">🍵</span>
+                    {/* Side decorations */}
+                    <span className="absolute top-[25%] left-0 text-base sm:text-lg drop-shadow-sm">🌿</span>
+                    <span className="absolute top-1/2 -translate-y-1/2 left-0 text-sm sm:text-base drop-shadow-sm">🍃</span>
+                    <span className="absolute top-[75%] left-0 text-base sm:text-lg drop-shadow-sm">🌿</span>
+                    <span className="absolute top-[25%] right-0 text-sm sm:text-base drop-shadow-sm">🍃</span>
+                    <span className="absolute top-1/2 -translate-y-1/2 right-0 text-base sm:text-lg drop-shadow-sm">🌿</span>
+                    <span className="absolute top-[75%] right-0 text-sm sm:text-base drop-shadow-sm">🍃</span>
+                    {/* Corner matcha */}
+                    <span className="absolute top-0 left-0 text-lg sm:text-xl drop-shadow-sm">🍵</span>
+                    <span className="absolute top-0 right-0 text-lg sm:text-xl drop-shadow-sm">🍵</span>
+                    {/* Bottom strip with date */}
+                    <div 
+                      className="absolute bottom-0 left-0 right-0 h-[14%] flex items-center justify-center"
+                      style={{ backgroundColor: "#A8C69F" }}
+                    >
+                      <span className="font-body text-xs sm:text-sm font-semibold" style={{ color: "#3D5A3A" }}>
+                        🍃 Matcha Moments 🍃 {dateStamp}
+                      </span>
+                    </div>
+                  </>
                 )}
               </div>
             </>
@@ -386,10 +727,10 @@ export default function PhotoBooth({ onNext }: PhotoBoothProps) {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-4"
+            className="mb-3"
           >
-            <p className="font-body text-sm text-brown-light mb-2">Choose a frame:</p>
-            <div className="flex justify-center gap-2 sm:gap-3">
+            <p className="font-body text-xs text-brown-light mb-1.5">Frame:</p>
+            <div className="flex justify-center gap-1.5 sm:gap-2 flex-wrap">
               {frames.map((frame) => (
                 <motion.button
                   key={frame.type}
@@ -397,7 +738,7 @@ export default function PhotoBooth({ onNext }: PhotoBoothProps) {
                   whileTap={{ scale: 0.95 }}
                   onClick={() => setSelectedFrame(frame.type)}
                   className={`
-                    w-11 h-11 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-lg sm:text-xl
+                    w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center text-base sm:text-lg
                     transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blush touch-manipulation
                     ${selectedFrame === frame.type
                       ? "bg-blush text-white shadow-lg"
@@ -408,6 +749,40 @@ export default function PhotoBooth({ onNext }: PhotoBoothProps) {
                   title={frame.label}
                 >
                   {frame.icon}
+                </motion.button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Filter selector (only when camera is active) */}
+        {stream && !capturedPhoto && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="mb-4"
+          >
+            <p className="font-body text-xs text-brown-light mb-1.5">Filter:</p>
+            <div className="flex justify-center gap-1.5 sm:gap-2 flex-wrap">
+              {filters.map((filter) => (
+                <motion.button
+                  key={filter.type}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => setSelectedFilter(filter.type)}
+                  className={`
+                    w-10 h-10 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center text-base sm:text-lg
+                    transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-sage touch-manipulation
+                    ${selectedFilter === filter.type
+                      ? "bg-sage text-white shadow-lg"
+                      : "bg-white shadow-md active:shadow-lg sm:hover:shadow-lg"
+                    }
+                  `}
+                  aria-label={filter.label}
+                  title={filter.label}
+                >
+                  {filter.icon}
                 </motion.button>
               ))}
             </div>
@@ -474,12 +849,12 @@ export default function PhotoBooth({ onNext }: PhotoBoothProps) {
           Continue
         </motion.button>
 
-        {/* Decorative elements */}
+        {/* Decorative elements - positioned in far corners */}
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.15 }}
+          animate={{ opacity: 0.1 }}
           transition={{ delay: 0.8 }}
-          className="absolute top-20 right-6 text-5xl pointer-events-none hidden sm:block"
+          className="absolute top-2 right-2 text-3xl pointer-events-none hidden xl:block"
           aria-hidden="true"
         >
           📷
@@ -487,9 +862,9 @@ export default function PhotoBooth({ onNext }: PhotoBoothProps) {
         
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.15 }}
+          animate={{ opacity: 0.1 }}
           transition={{ delay: 1 }}
-          className="absolute bottom-28 left-6 text-4xl pointer-events-none hidden sm:block"
+          className="absolute bottom-2 left-2 text-3xl pointer-events-none hidden xl:block"
           aria-hidden="true"
         >
           🎞️

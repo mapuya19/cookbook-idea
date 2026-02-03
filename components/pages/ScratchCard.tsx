@@ -204,24 +204,18 @@ export default function ScratchCard({ onNext }: ScratchCardProps) {
                 </p>
               </motion.div>
 
-              {/* Decorative hearts */}
+              {/* Decorative dango */}
               <div className="flex gap-2 mt-4" aria-hidden="true">
                 {[...Array(5)].map((_, i) => (
-                  <motion.svg
+                  <motion.span
                     key={i}
                     initial={{ scale: 0 }}
                     animate={{ scale: isRevealed ? 1 : 0 }}
                     transition={{ delay: 0.3 + i * 0.1, type: "spring" }}
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    className="text-blush"
+                    className="text-base"
                   >
-                    <path
-                      d="M12 21C12 21 4 14 4 9C4 5.5 6.5 3 9.5 3C11 3 12 4 12 4C12 4 13 3 14.5 3C17.5 3 20 5.5 20 9C20 14 12 21 12 21Z"
-                      fill="currentColor"
-                    />
-                  </motion.svg>
+                    🍡
+                  </motion.span>
                 ))}
               </div>
             </div>
@@ -317,12 +311,12 @@ export default function ScratchCard({ onNext }: ScratchCardProps) {
           </motion.button>
         </motion.div>
 
-        {/* Decorative elements */}
+        {/* Decorative elements - positioned in far corners to avoid content */}
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.15 }}
+          animate={{ opacity: 0.1 }}
           transition={{ delay: 0.8 }}
-          className="absolute top-16 right-6 text-5xl pointer-events-none hidden sm:block"
+          className="absolute top-2 right-2 text-3xl pointer-events-none hidden xl:block"
           aria-hidden="true"
         >
           🎁
@@ -330,9 +324,9 @@ export default function ScratchCard({ onNext }: ScratchCardProps) {
         
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.15 }}
+          animate={{ opacity: 0.1 }}
           transition={{ delay: 1 }}
-          className="absolute bottom-24 left-6 text-4xl pointer-events-none hidden sm:block"
+          className="absolute bottom-2 left-2 text-3xl pointer-events-none hidden xl:block"
           aria-hidden="true"
         >
           💝

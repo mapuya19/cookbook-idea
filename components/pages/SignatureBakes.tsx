@@ -78,30 +78,25 @@ export default function SignatureBakes({ onNext }: SignatureBakesProps) {
           ))}
         </div>
 
-        {/* Decorative elements */}
+        {/* Decorative elements - positioned in far corners to avoid content */}
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          animate={{ opacity: 0.15 }}
           transition={{ delay: 1, duration: 0.6 }}
-          className="absolute top-20 right-8 hidden lg:block"
+          className="absolute top-4 right-4 hidden xl:block pointer-events-none"
           aria-hidden="true"
         >
-          <svg width="60" height="60" viewBox="0 0 60 60" className="text-blush/30" aria-hidden="true">
-            <path
-              d="M30 55C30 55 5 35 5 20C5 10 12 3 22 3C27 3 30 8 30 8C30 8 33 3 38 3C48 3 55 10 55 20C55 35 30 55 30 55Z"
-              fill="currentColor"
-            />
-          </svg>
+          <span className="text-3xl opacity-30">🍡</span>
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          animate={{ opacity: 0.15 }}
           transition={{ delay: 1.2, duration: 0.6 }}
-          className="absolute bottom-32 left-8 hidden lg:block"
+          className="absolute bottom-4 left-4 hidden xl:block pointer-events-none"
           aria-hidden="true"
         >
-          <svg width="50" height="50" viewBox="0 0 50 50" className="text-sage/40" aria-hidden="true">
+          <svg width="35" height="35" viewBox="0 0 50 50" className="text-sage/40" aria-hidden="true">
             <circle cx="25" cy="25" r="20" fill="currentColor" />
             <circle cx="18" cy="20" r="4" fill="#5D4037" opacity="0.5" />
             <circle cx="32" cy="22" r="3" fill="#5D4037" opacity="0.5" />
