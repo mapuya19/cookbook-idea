@@ -258,13 +258,13 @@ export default function CookieClicker({ onBack }: CookieClickerProps) {
         </AnimatePresence>
 
         {/* Main cookie button */}
-        <div className="flex justify-center mb-6">
+        <div className="flex justify-center mb-4 sm:mb-6">
           <motion.button
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: cookieScale }}
             transition={{ type: "spring", stiffness: 300 }}
             onClick={handleCookieClick}
-            className="relative w-40 h-40 sm:w-48 sm:h-48 rounded-full focus:outline-none focus-visible:ring-4 focus-visible:ring-blush focus-visible:ring-offset-4 active:scale-95 transition-transform"
+            className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48 rounded-full focus:outline-none focus-visible:ring-4 focus-visible:ring-blush focus-visible:ring-offset-4 active:scale-95 transition-transform touch-manipulation select-none"
             aria-label="Click to bake cookies"
           >
             {/* Cookie SVG */}
@@ -307,12 +307,12 @@ export default function CookieClicker({ onBack }: CookieClickerProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="mb-6"
+          className="mb-4 sm:mb-6"
         >
-          <h3 className="font-handwritten text-xl text-brown text-center mb-3">
+          <h3 className="font-handwritten text-lg sm:text-xl text-brown text-center mb-2 sm:mb-3">
             Bakery Upgrades
           </h3>
-          <div className="grid grid-cols-2 gap-2 sm:gap-3">
+          <div className="grid grid-cols-2 gap-1.5 sm:gap-2 md:gap-3">
             {upgrades.map(upgrade => {
               const owned = ownedUpgrades[upgrade.id] || 0;
               const cost = Math.floor(upgrade.cost * Math.pow(1.15, owned));
@@ -326,31 +326,31 @@ export default function CookieClicker({ onBack }: CookieClickerProps) {
                   onClick={() => buyUpgrade(upgrade.id)}
                   disabled={!canAfford}
                   className={`
-                    p-3 rounded-xl text-left transition-all
+                    p-2 sm:p-3 rounded-lg sm:rounded-xl text-left transition-all touch-manipulation
                     focus:outline-none focus-visible:ring-2 focus-visible:ring-blush
                     ${canAfford 
-                      ? 'bg-white shadow-md hover:shadow-lg cursor-pointer' 
+                      ? 'bg-white shadow-md active:shadow-lg sm:hover:shadow-lg cursor-pointer active:scale-[0.98]' 
                       : 'bg-brown-light/10 opacity-60 cursor-not-allowed'
                     }
                   `}
                 >
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-2xl">{upgrade.icon}</span>
+                  <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1">
+                    <span className="text-xl sm:text-2xl">{upgrade.icon}</span>
                     <div className="flex-1 min-w-0">
-                      <p className="font-body font-semibold text-brown text-sm truncate">
+                      <p className="font-body font-semibold text-brown text-xs sm:text-sm truncate">
                         {upgrade.name}
                       </p>
-                      <p className="font-body text-xs text-brown-light">
+                      <p className="font-body text-[10px] sm:text-xs text-brown-light hidden sm:block">
                         {upgrade.description}
                       </p>
                     </div>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className={`font-body text-sm ${canAfford ? 'text-sage' : 'text-brown-light'}`}>
+                    <span className={`font-body text-xs sm:text-sm ${canAfford ? 'text-sage' : 'text-brown-light'}`}>
                       🍪 {formatNumber(cost)}
                     </span>
                     {owned > 0 && (
-                      <span className="font-body text-xs text-blush bg-blush-light/50 px-2 py-0.5 rounded-full">
+                      <span className="font-body text-[10px] sm:text-xs text-blush bg-blush-light/50 px-1.5 sm:px-2 py-0.5 rounded-full">
                         x{owned}
                       </span>
                     )}
@@ -384,7 +384,7 @@ export default function CookieClicker({ onBack }: CookieClickerProps) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onBack}
-            className="px-6 py-3 bg-brown-light/20 text-brown font-body font-semibold rounded-full shadow-md hover:shadow-lg hover:bg-brown-light/30 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brown focus-visible:ring-offset-2"
+            className="px-5 sm:px-6 py-2.5 sm:py-3 bg-brown-light/20 text-brown font-body font-semibold rounded-full shadow-md hover:shadow-lg hover:bg-brown-light/30 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brown focus-visible:ring-offset-2 touch-manipulation active:scale-95"
           >
             Back to Games
           </motion.button>

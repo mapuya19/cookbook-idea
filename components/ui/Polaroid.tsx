@@ -144,7 +144,7 @@ export default function Polaroid({
       tabIndex={0}
       aria-expanded={isExpanded}
       aria-label={`${title}: ${isExpanded && expandedCaption ? expandedCaption : caption}. ${expandedCaption ? "Press to " + (isExpanded ? "collapse" : "expand") : ""}`}
-      className="polaroid cursor-pointer w-48 sm:w-56 focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2"
+      className="polaroid cursor-pointer w-36 sm:w-44 md:w-48 lg:w-56 focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2"
       style={{ ["--rotation" as string]: `${rotation}deg` }}
     >
       {/* Image area */}
@@ -163,14 +163,14 @@ export default function Polaroid({
       </div>
 
       {/* Caption area */}
-      <div className="pt-3 pb-1 px-1">
-        <p className="font-handwritten text-xl text-brown text-center leading-tight">
+      <div className="pt-2 sm:pt-3 pb-1 px-1">
+        <p className="font-handwritten text-base sm:text-lg md:text-xl text-brown text-center leading-tight">
           {title}
         </p>
         <motion.p
           initial={{ height: "auto" }}
           animate={{ height: "auto" }}
-          className="font-body text-sm text-brown-light/70 text-center mt-1 italic"
+          className="font-body text-xs sm:text-sm text-brown-light/70 text-center mt-0.5 sm:mt-1 italic line-clamp-2"
         >
           {isExpanded && expandedCaption ? expandedCaption : caption}
         </motion.p>
@@ -178,7 +178,7 @@ export default function Polaroid({
 
       {/* Tape decoration */}
       <div 
-        className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-5 bg-sage/40 rotate-2" 
+        className="absolute -top-2 sm:-top-3 left-1/2 -translate-x-1/2 w-10 sm:w-12 h-4 sm:h-5 bg-sage/40 rotate-2" 
         style={{ clipPath: "polygon(5% 0%, 95% 0%, 100% 100%, 0% 100%)" }}
         aria-hidden="true"
       />

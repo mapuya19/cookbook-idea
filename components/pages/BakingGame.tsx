@@ -217,7 +217,7 @@ export default function BakingGame({ onPrev }: BakingGameProps) {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-3 mb-6"
+          className="grid grid-cols-3 sm:grid-cols-4 gap-1.5 sm:gap-2 md:gap-3 mb-4 sm:mb-6 px-2 sm:px-0"
         >
           {cards.map((card, index) => (
             <motion.button
@@ -228,14 +228,14 @@ export default function BakingGame({ onPrev }: BakingGameProps) {
               onClick={() => handleCardClick(card.id)}
               disabled={card.isFlipped || card.isMatched || isLocked}
               className={`
-                aspect-square rounded-xl relative
-                transition-all duration-300 transform-gpu
+                aspect-square rounded-lg sm:rounded-xl relative
+                transition-all duration-300 transform-gpu touch-manipulation
                 focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2
                 ${card.isMatched 
                   ? 'bg-sage-light/50 cursor-default' 
                   : card.isFlipped 
                     ? 'bg-white shadow-lg' 
-                    : 'bg-blush-light hover:bg-blush hover:scale-105 cursor-pointer shadow-md'
+                    : 'bg-blush-light active:bg-blush sm:hover:bg-blush active:scale-95 sm:hover:scale-105 cursor-pointer shadow-md'
                 }
               `}
               style={{ perspective: '1000px' }}
@@ -249,7 +249,7 @@ export default function BakingGame({ onPrev }: BakingGameProps) {
                     animate={{ rotateY: 0, opacity: 1 }}
                     exit={{ rotateY: 90, opacity: 0 }}
                     transition={{ duration: 0.2 }}
-                    className="absolute inset-0 flex items-center justify-center text-3xl sm:text-4xl"
+                    className="absolute inset-0 flex items-center justify-center text-2xl sm:text-3xl md:text-4xl"
                   >
                     {card.emoji}
                   </motion.span>
@@ -312,13 +312,13 @@ export default function BakingGame({ onPrev }: BakingGameProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="flex flex-col sm:flex-row gap-3 justify-center items-center"
+          className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center items-center"
         >
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={resetGame}
-            className="px-6 py-3 bg-sage text-white font-body font-semibold rounded-full shadow-md hover:shadow-lg transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2"
+            className="px-5 sm:px-6 py-2.5 sm:py-3 bg-sage text-white font-body font-semibold rounded-full shadow-md hover:shadow-lg transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 touch-manipulation active:scale-95"
           >
             {isWon ? 'Play Again' : 'Restart'}
           </motion.button>
@@ -327,7 +327,7 @@ export default function BakingGame({ onPrev }: BakingGameProps) {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onPrev}
-            className="px-6 py-3 bg-brown-light/20 text-brown font-body font-semibold rounded-full shadow-md hover:shadow-lg hover:bg-brown-light/30 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brown focus-visible:ring-offset-2"
+            className="px-5 sm:px-6 py-2.5 sm:py-3 bg-brown-light/20 text-brown font-body font-semibold rounded-full shadow-md hover:shadow-lg hover:bg-brown-light/30 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brown focus-visible:ring-offset-2 touch-manipulation active:scale-95"
           >
             Back to Scrapbook
           </motion.button>

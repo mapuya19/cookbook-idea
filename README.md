@@ -42,15 +42,20 @@ Follow the prompts to deploy.
 
 ## Features
 
-- 📖 6-page digital scrapbook with smooth slide transitions
-- 🎬 Animated intro with flying ingredients and mixing bowl
+- 📖 8-page digital scrapbook with smooth slide transitions
 - 🍪 Signature bakes gallery with Polaroid-style photos
 - 💝 "Things I Love About You" sticky notes
 - ✅ Interactive future recipes checklist
+- 🎟️ Scratch card surprise
+- 📸 Photo booth with fun filters
 - 🎉 Confetti celebration on the Valentine page
-- 🎮 Bonus games section with Memory Match and Cookie Clicker
-- ♿ Comprehensive accessibility (keyboard navigation, screen reader support)
-- 📱 Fully responsive - works on mobile and desktop
+- 🎮 Bonus games: Memory Match, Cookie Clicker, and a secret unlockable game!
+- 🥚 Easter egg: Click cookies on the cover to unlock a secret game
+- 🔊 Sound effects for interactions
+- ✨ Cursor trail effect
+- ⌨️ Full keyboard navigation (arrow keys, space, escape)
+- ♿ Comprehensive accessibility (screen reader support, reduced motion)
+- 📱 Fully responsive with iOS safe area support
 
 ## Tech Stack
 

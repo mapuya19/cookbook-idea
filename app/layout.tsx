@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Caveat, Quicksand } from "next/font/google";
 import "./globals.css";
 
@@ -17,6 +17,22 @@ const quicksand = Quicksand({
 export const metadata: Metadata = {
   title: "Things You Bake, Things I Love",
   description: "A little baking scrapbook for Kezia",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Baking Scrapbook",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
