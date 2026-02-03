@@ -7,6 +7,7 @@ import SignatureBakes from "./pages/SignatureBakes";
 import ThingsILove from "./pages/ThingsILove";
 import FutureRecipes from "./pages/FutureRecipes";
 import ValentinePage from "./pages/ValentinePage";
+import GameSelect from "./pages/GameSelect";
 import PageFooter from "./ui/PageFooter";
 
 const pages = [
@@ -15,30 +16,28 @@ const pages = [
   { component: ThingsILove, showFooter: true },
   { component: FutureRecipes, showFooter: true },
   { component: ValentinePage, showFooter: false },
+  { component: GameSelect, showFooter: false },
 ];
 
+// Modern slide transition - smooth horizontal movement with gentle fade
 const pageVariants = {
   enter: (direction: number) => ({
-    rotateY: direction > 0 ? 90 : -90,
+    x: direction > 0 ? "40%" : "-40%",
     opacity: 0,
-    scale: 0.9,
   }),
   center: {
-    rotateY: 0,
+    x: 0,
     opacity: 1,
-    scale: 1,
   },
   exit: (direction: number) => ({
-    rotateY: direction < 0 ? 90 : -90,
+    x: direction < 0 ? "40%" : "-40%",
     opacity: 0,
-    scale: 0.9,
   }),
 };
 
 const pageTransition = {
-  type: "spring" as const,
-  stiffness: 300,
-  damping: 30,
+  type: "tween",
+  ease: [0.25, 0.1, 0.25, 1], // cubic-bezier for smooth, natural feel
   duration: 0.5,
 };
 
@@ -133,7 +132,7 @@ export default function Scrapbook() {
           role="navigation"
         >
           {pages.map((_, index) => {
-            const pageNames = ["Cover", "Signature Bakes", "Things I Love", "Future Recipes", "Valentine"];
+            const pageNames = ["Cover", "Signature Bakes", "Things I Love", "Future Recipes", "Valentine", "Games"];
             return (
               <button
                 key={index}
@@ -161,7 +160,6 @@ export default function Scrapbook() {
           animate="center"
           exit="exit"
           transition={pageTransition}
-          style={{ perspective: 1000 }}
           className="min-h-dvh w-full"
         >
           <CurrentPageComponent onNext={nextPage} onPrev={prevPage} />

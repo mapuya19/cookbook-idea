@@ -55,7 +55,7 @@ function playDingSound() {
   }
 }
 
-export default function ValentinePage({ }: ValentinePageProps) {
+export default function ValentinePage({ onNext }: ValentinePageProps) {
   const [hasAnswered, setHasAnswered] = useState(false);
   const [showHearts, setShowHearts] = useState(false);
   const hasPlayedRef = useRef(false);
@@ -237,12 +237,25 @@ export default function ValentinePage({ }: ValentinePageProps) {
                 Happy Valentine&apos;s Day, Kezia 💕
               </motion.p>
 
+              {/* Play game button */}
+              <motion.button
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.5, duration: 0.5 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={onNext}
+                className="mt-8 px-6 py-3 bg-sage text-white font-body font-semibold rounded-full shadow-lg hover:shadow-xl transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2"
+              >
+                Play a little game? 🍪
+              </motion.button>
+
               {/* Restart hint */}
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 2, duration: 0.6 }}
-                className="font-body text-sm text-brown-light/40 mt-12"
+                className="font-body text-sm text-brown-light/40 mt-8"
               >
                 (you can flip back through anytime)
               </motion.p>
