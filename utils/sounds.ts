@@ -3,15 +3,31 @@
 
 type AudioContextType = typeof AudioContext;
 
+// Shared audio context for better performance and to avoid creating too many contexts
+let sharedAudioContext: AudioContext | null = null;
+
 function getAudioContext(): AudioContext | null {
   try {
+    if (sharedAudioContext && sharedAudioContext.state !== 'closed') {
+      // Resume if suspended (e.g., after user interaction requirement)
+      if (sharedAudioContext.state === 'suspended') {
+        sharedAudioContext.resume();
+      }
+      return sharedAudioContext;
+    }
+    
     const AudioContextClass = window.AudioContext || 
       (window as unknown as { webkitAudioContext: AudioContextType }).webkitAudioContext;
-    return new AudioContextClass();
+    sharedAudioContext = new AudioContextClass();
+    return sharedAudioContext;
   } catch {
     return null;
   }
 }
+
+// Debounce tracking for page flip sound
+let lastPageFlipTime = 0;
+const PAGE_FLIP_DEBOUNCE_MS = 150;
 
 // Check if user prefers reduced motion
 function prefersReducedMotion(): boolean {
@@ -20,52 +36,67 @@ function prefersReducedMotion(): boolean {
 }
 
 /**
- * Play a subtle page flip/paper rustle sound
+ * Play a satisfying click sound for page navigation and button clicks
+ * Clean, tactile feel inspired by modern UI interactions
  */
 export function playPageFlip(): void {
+  if (prefersReducedMotion()) return;
+  
+  // Debounce to prevent rapid-fire sounds
+  const currentTime = Date.now();
+  if (currentTime - lastPageFlipTime < PAGE_FLIP_DEBOUNCE_MS) return;
+  lastPageFlipTime = currentTime;
+  
+  playClick();
+}
+
+/**
+ * Core click sound - satisfying, subtle tactile feedback
+ */
+export function playClick(): void {
   if (prefersReducedMotion()) return;
   
   const audioContext = getAudioContext();
   if (!audioContext) return;
 
-  // Create noise buffer for paper rustle
-  const bufferSize = audioContext.sampleRate * 0.08; // 80ms
-  const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
-  const data = buffer.getChannelData(0);
+  const now = audioContext.currentTime;
 
-  // Fill with filtered noise that sounds like paper
-  for (let i = 0; i < bufferSize; i++) {
-    // Quick attack, medium decay
-    const envelope = Math.exp(-i / (bufferSize * 0.3));
-    // Add some variation for more natural sound
-    const variation = Math.sin(i * 0.01) * 0.3 + 0.7;
-    data[i] = (Math.random() * 2 - 1) * envelope * variation * 0.5;
-  }
+  // Primary click tone - short, punchy
+  const clickOsc = audioContext.createOscillator();
+  const clickGain = audioContext.createGain();
+  
+  clickOsc.type = "sine";
+  clickOsc.frequency.setValueAtTime(1800, now);
+  clickOsc.frequency.exponentialRampToValueAtTime(1200, now + 0.03);
+  
+  // Very quick attack and decay for crisp click
+  clickGain.gain.setValueAtTime(0, now);
+  clickGain.gain.linearRampToValueAtTime(0.15, now + 0.003);
+  clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+  
+  clickOsc.connect(clickGain);
+  clickGain.connect(audioContext.destination);
+  
+  clickOsc.start(now);
+  clickOsc.stop(now + 0.06);
 
-  const noiseSource = audioContext.createBufferSource();
-  noiseSource.buffer = buffer;
-
-  // Bandpass filter to make it sound more like paper
-  const bandpass = audioContext.createBiquadFilter();
-  bandpass.type = "bandpass";
-  bandpass.frequency.value = 2000;
-  bandpass.Q.value = 0.5;
-
-  // High-pass to remove low rumble
-  const highpass = audioContext.createBiquadFilter();
-  highpass.type = "highpass";
-  highpass.frequency.value = 800;
-
-  const gainNode = audioContext.createGain();
-  gainNode.gain.value = 0.15;
-
-  noiseSource.connect(bandpass);
-  bandpass.connect(highpass);
-  highpass.connect(gainNode);
-  gainNode.connect(audioContext.destination);
-
-  noiseSource.start();
-  noiseSource.stop(audioContext.currentTime + 0.1);
+  // Subtle low "thud" for body/weight
+  const thudOsc = audioContext.createOscillator();
+  const thudGain = audioContext.createGain();
+  
+  thudOsc.type = "sine";
+  thudOsc.frequency.setValueAtTime(150, now);
+  thudOsc.frequency.exponentialRampToValueAtTime(80, now + 0.04);
+  
+  thudGain.gain.setValueAtTime(0, now);
+  thudGain.gain.linearRampToValueAtTime(0.08, now + 0.005);
+  thudGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+  
+  thudOsc.connect(thudGain);
+  thudGain.connect(audioContext.destination);
+  
+  thudOsc.start(now);
+  thudOsc.stop(now + 0.06);
 }
 
 /**
@@ -153,6 +184,7 @@ export function playCookieClick(): void {
 
 /**
  * Play a scratch sound for the scratch card
+ * Designed to sound like scratching a lottery ticket with a coin
  */
 export function playScratchSound(): void {
   if (prefersReducedMotion()) return;
@@ -160,32 +192,60 @@ export function playScratchSound(): void {
   const audioContext = getAudioContext();
   if (!audioContext) return;
 
-  const bufferSize = audioContext.sampleRate * 0.02;
+  const now = audioContext.currentTime;
+  
+  // Create a longer, more natural scratching noise
+  const duration = 0.06 + Math.random() * 0.03; // Vary duration slightly
+  const bufferSize = Math.floor(audioContext.sampleRate * duration);
   const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
   const data = buffer.getChannelData(0);
 
+  // Generate noise with natural scratching texture
+  // Use pink-ish noise (weighted random) for more organic sound
+  let lastValue = 0;
   for (let i = 0; i < bufferSize; i++) {
-    const envelope = Math.exp(-i / (bufferSize * 0.5));
-    data[i] = (Math.random() * 2 - 1) * envelope * 0.3;
+    // Smooth envelope - gentle attack and decay
+    const position = i / bufferSize;
+    const envelope = Math.sin(position * Math.PI) * 0.8; // Smooth bell curve
+    
+    // Mix of white noise and filtered noise for texture
+    const whiteNoise = Math.random() * 2 - 1;
+    // Lowpass the noise by averaging with previous sample (creates softer texture)
+    const smoothNoise = whiteNoise * 0.6 + lastValue * 0.4;
+    lastValue = smoothNoise;
+    
+    // Add subtle variation to simulate uneven scratching
+    const scratchTexture = Math.sin(i * 0.05) * 0.15 + 1;
+    
+    data[i] = smoothNoise * envelope * scratchTexture * 0.4;
   }
 
   const noiseSource = audioContext.createBufferSource();
   noiseSource.buffer = buffer;
 
-  const bandpass = audioContext.createBiquadFilter();
-  bandpass.type = "bandpass";
-  bandpass.frequency.value = 3000;
-  bandpass.Q.value = 1;
+  // Lowpass filter to remove harsh high frequencies
+  const lowpass = audioContext.createBiquadFilter();
+  lowpass.type = "lowpass";
+  lowpass.frequency.value = 4000 + Math.random() * 1000; // Slight variation
+  lowpass.Q.value = 0.5;
 
+  // Highpass to remove rumble
+  const highpass = audioContext.createBiquadFilter();
+  highpass.type = "highpass";
+  highpass.frequency.value = 400;
+  highpass.Q.value = 0.5;
+
+  // Gentle gain
   const gainNode = audioContext.createGain();
-  gainNode.gain.value = 0.08;
+  gainNode.gain.value = 0.06;
 
-  noiseSource.connect(bandpass);
-  bandpass.connect(gainNode);
+  noiseSource.connect(lowpass);
+  lowpass.connect(highpass);
+  highpass.connect(gainNode);
   gainNode.connect(audioContext.destination);
 
-  noiseSource.start();
-  noiseSource.stop(audioContext.currentTime + 0.03);
+  noiseSource.start(now);
+  noiseSource.stop(now + duration);
 }
 
 /**
