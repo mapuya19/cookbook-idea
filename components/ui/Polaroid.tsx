@@ -116,6 +116,9 @@ export default function Polaroid({
   placeholder = "cookie",
 }: PolaroidProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  const showImage = imageSrc && !imageError;
 
   return (
     <motion.div
@@ -134,12 +137,13 @@ export default function Polaroid({
     >
       {/* Image area */}
       <div className="relative w-full aspect-square bg-cream overflow-hidden">
-        {imageSrc ? (
+        {showImage ? (
           <Image
             src={imageSrc}
             alt={title}
             fill
             className="object-cover"
+            onError={() => setImageError(true)}
           />
         ) : (
           <PlaceholderIllustration type={placeholder} />

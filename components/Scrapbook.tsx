@@ -5,7 +5,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import CoverPage from "./pages/CoverPage";
 import SignatureBakes from "./pages/SignatureBakes";
 import ThingsILove from "./pages/ThingsILove";
-import BakingMemories from "./pages/BakingMemories";
 import FutureRecipes from "./pages/FutureRecipes";
 import ValentinePage from "./pages/ValentinePage";
 import PageFooter from "./ui/PageFooter";
@@ -14,7 +13,6 @@ const pages = [
   { component: CoverPage, showFooter: false },
   { component: SignatureBakes, showFooter: true },
   { component: ThingsILove, showFooter: true },
-  { component: BakingMemories, showFooter: true },
   { component: FutureRecipes, showFooter: true },
   { component: ValentinePage, showFooter: false },
 ];

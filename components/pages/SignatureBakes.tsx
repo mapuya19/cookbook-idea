@@ -10,36 +10,36 @@ interface SignatureBakesProps {
 
 const bakes = [
   {
-    title: "Miffy Cookies",
-    caption: "These little guys have my whole heart",
-    expandedCaption: "Every time you make these, I fall in love all over again. The cutest cookies ever made.",
+    title: "Matcha Checkerboard Cookies",
+    caption: "The precision. The patience. Incredible.",
+    expandedCaption: "These took so much skill to make. Every little square perfectly aligned. You're amazing.",
     placeholder: "cookie" as const,
     rotation: -4,
-    imageSrc: "/images/miffy-cookies.jpg",
+    imageSrc: "/images/matcha-cookies.jpg",
+  },
+  {
+    title: "Cake Decorating Date",
+    caption: "Miffy & Cinnamoroll, side by side",
+    expandedCaption: "That class we took together — your Miffy cake turned out so cute. One of my favorite date memories.",
+    placeholder: "cookie" as const,
+    rotation: 3,
+    imageSrc: "/images/cake-class.jpg",
+  },
+  {
+    title: "Miffy Dessert",
+    caption: "Art you can eat",
+    expandedCaption: "You decorated this at C as in Charlie and it was almost too cute to eat. Almost.",
+    placeholder: "mochi" as const,
+    rotation: -2,
+    imageSrc: "/images/miffy-dessert.jpg",
   },
   {
     title: "Heart Pizza",
     caption: "Proof that love is delicious",
-    expandedCaption: "You turned a simple dinner into one of my favorite memories. That's your superpower.",
+    expandedCaption: "You turned a simple dinner into one of my favorite memories. That golden crust, the fresh basil... perfect.",
     placeholder: "pizza" as const,
-    rotation: 3,
-    imageSrc: "/images/heart-pizza.jpg",
-  },
-  {
-    title: "Mango Mochi",
-    caption: "Soft, sweet, just like you",
-    expandedCaption: "Watching you make these was like watching magic happen. And they tasted like it too.",
-    placeholder: "mochi" as const,
-    rotation: -2,
-    imageSrc: "/images/mango-mochi.jpg",
-  },
-  {
-    title: "Her Cookies",
-    caption: "I think about these more than I should",
-    expandedCaption: "Honestly, I daydream about your cookies. Is that weird? I don't care. They're that good.",
-    placeholder: "bread" as const,
     rotation: 5,
-    imageSrc: "/images/cookies.jpg",
+    imageSrc: "/images/heart-pizza.jpg",
   },
 ];
 
@@ -73,8 +73,7 @@ export default function SignatureBakes({ onNext }: SignatureBakesProps) {
               placeholder={bake.placeholder}
               rotation={bake.rotation}
               delay={0.2 + index * 0.15}
-              // Use placeholder if image doesn't exist
-              imageSrc={undefined}
+              imageSrc={bake.imageSrc}
             />
           ))}
         </div>
