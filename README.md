@@ -11,7 +11,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the scrapbook.
+Open [http://localhost:3002](http://localhost:3002) to see the scrapbook.
 
 ### Photos
 
