@@ -370,7 +370,7 @@ export function playCatchSound(): void {
  */
 export function playMissSound(): void {
   if (prefersReducedMotion()) return;
-  
+
   const audioContext = getAudioContext();
   if (!audioContext) return;
 
@@ -389,4 +389,175 @@ export function playMissSound(): void {
 
   osc.start();
   osc.stop(audioContext.currentTime + 0.2);
+}
+
+/**
+ * Play a pop sound for card interactions
+ */
+export function playPopSound(): void {
+  if (prefersReducedMotion()) return;
+
+  const audioContext = getAudioContext();
+  if (!audioContext) return;
+
+  const now = audioContext.currentTime;
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+
+  oscillator.frequency.setValueAtTime(600, now);
+  oscillator.frequency.exponentialRampToValueAtTime(200, now + 0.1);
+  oscillator.type = "sine";
+
+  gainNode.gain.setValueAtTime(0.2, now);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+
+  oscillator.start(now);
+  oscillator.stop(now + 0.1);
+}
+
+/**
+ * Play a success chime for game wins
+ */
+export function playSuccessSound(): void {
+  if (prefersReducedMotion()) return;
+
+  const audioContext = getAudioContext();
+  if (!audioContext) return;
+
+  const notes = [523, 659, 784]; // C, E, G chord
+  notes.forEach((freq, i) => {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+    oscillator.type = "sine";
+
+    gainNode.gain.setValueAtTime(0, audioContext.currentTime + i * 0.1);
+    gainNode.gain.linearRampToValueAtTime(0.15, audioContext.currentTime + i * 0.1 + 0.05);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + i * 0.1 + 0.5);
+
+    oscillator.start(audioContext.currentTime + i * 0.1);
+    oscillator.stop(audioContext.currentTime + i * 0.1 + 0.5);
+  });
+}
+
+/**
+ * Play a satisfying click sound for button interactions
+ */
+export function playButtonClick(): void {
+  if (prefersReducedMotion()) return;
+
+  const audioContext = getAudioContext();
+  if (!audioContext) return;
+
+  const bufferSize = audioContext.sampleRate * 0.02;
+  const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+  const data = buffer.getChannelData(0);
+
+  for (let i = 0; i < bufferSize; i++) {
+    const envelope = Math.exp(-i / (bufferSize * 0.1));
+    data[i] = (Math.random() * 2 - 1) * envelope;
+  }
+
+  const noiseSource = audioContext.createBufferSource();
+  noiseSource.buffer = buffer;
+
+  const highpass = audioContext.createBiquadFilter();
+  highpass.type = "highpass";
+  highpass.frequency.value = 1500;
+
+  const lowpass = audioContext.createBiquadFilter();
+  lowpass.type = "lowpass";
+  lowpass.frequency.value = 6000;
+
+  const gainNode = audioContext.createGain();
+  gainNode.gain.value = 0.4;
+
+  noiseSource.connect(highpass);
+  highpass.connect(lowpass);
+  lowpass.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+
+  noiseSource.start();
+  noiseSource.stop(audioContext.currentTime + 0.03);
+}
+
+/**
+ * Play upgrade sound for game upgrades
+ */
+export function playUpgradeSound(): void {
+  if (prefersReducedMotion()) return;
+
+  const audioContext = getAudioContext();
+  if (!audioContext) return;
+
+  [440, 554, 659].forEach((freq, i) => {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.frequency.setValueAtTime(freq, audioContext.currentTime + i * 0.1);
+    oscillator.type = "sine";
+
+    gainNode.gain.setValueAtTime(0, audioContext.currentTime + i * 0.1);
+    gainNode.gain.linearRampToValueAtTime(0.15, audioContext.currentTime + i * 0.1 + 0.02);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + i * 0.1 + 0.3);
+
+    oscillator.start(audioContext.currentTime + i * 0.1);
+    oscillator.stop(audioContext.currentTime + i * 0.1 + 0.3);
+  });
+}
+
+/**
+ * Play a pleasant ding sound
+ */
+export function playDingSound(): void {
+  if (prefersReducedMotion()) return;
+
+  const audioContext = getAudioContext();
+  if (!audioContext) return;
+
+  const now = audioContext.currentTime;
+
+  // Main tone
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+
+  oscillator.frequency.setValueAtTime(830, now); // High G
+  oscillator.type = "sine";
+
+  gainNode.gain.setValueAtTime(0, now);
+  gainNode.gain.linearRampToValueAtTime(0.3, now + 0.01);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, now + 1.5);
+
+  oscillator.start(now);
+  oscillator.stop(now + 1.5);
+
+  // Second harmonic for richness
+  const oscillator2 = audioContext.createOscillator();
+  const gainNode2 = audioContext.createGain();
+
+  oscillator2.connect(gainNode2);
+  gainNode2.connect(audioContext.destination);
+
+  oscillator2.frequency.setValueAtTime(1660, now); // Octave up
+  oscillator2.type = "sine";
+
+  gainNode2.gain.setValueAtTime(0, now);
+  gainNode2.gain.linearRampToValueAtTime(0.1, now + 0.01);
+  gainNode2.gain.exponentialRampToValueAtTime(0.01, now + 1);
+
+  oscillator2.start(now);
+  oscillator2.stop(now + 1);
 }

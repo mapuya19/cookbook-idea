@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useCallback, useEffect } from "react";
 import { useConfetti } from "../effects/Confetti";
+import { playPopSound, playSuccessSound } from "@/utils/sounds";
 
 interface BakingGameProps {
   onNext: () => void;
@@ -51,59 +52,6 @@ function createCards(): Card[] {
   });
   // Shuffle
   return cards.sort(() => Math.random() - 0.5);
-}
-
-// Play a cute pop sound
-function playPopSound() {
-  try {
-    const audioContext = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
-    
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    oscillator.frequency.setValueAtTime(600, audioContext.currentTime);
-    oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.1);
-    oscillator.type = "sine";
-    
-    gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-    
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.1);
-  } catch {
-    // Audio not supported
-  }
-}
-
-// Play a success chime
-function playSuccessSound() {
-  try {
-    const audioContext = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
-    
-    const notes = [523, 659, 784]; // C, E, G chord
-    notes.forEach((freq, i) => {
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
-      oscillator.type = "sine";
-      
-      gainNode.gain.setValueAtTime(0, audioContext.currentTime + i * 0.1);
-      gainNode.gain.linearRampToValueAtTime(0.15, audioContext.currentTime + i * 0.1 + 0.05);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + i * 0.1 + 0.5);
-      
-      oscillator.start(audioContext.currentTime + i * 0.1);
-      oscillator.stop(audioContext.currentTime + i * 0.1 + 0.5);
-    });
-  } catch {
-    // Audio not supported
-  }
 }
 
 export default function BakingGame({ onPrev }: BakingGameProps) {

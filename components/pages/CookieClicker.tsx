@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useConfetti } from "../effects/Confetti";
+import { playButtonClick, playUpgradeSound } from "@/utils/sounds";
 
 interface CookieClickerProps {
   onBack: () => void;
@@ -33,78 +34,6 @@ interface FloatingNumber {
   x: number;
   y: number;
   value: number;
-}
-
-// Play a satisfying click sound
-function playClickSound() {
-  try {
-    const audioContext = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
-    
-    // Create noise buffer for the click
-    const bufferSize = audioContext.sampleRate * 0.02; // 20ms
-    const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
-    const data = buffer.getChannelData(0);
-    
-    // Fill with noise that decays quickly (click sound)
-    for (let i = 0; i < bufferSize; i++) {
-      // Sharp attack, quick decay
-      const envelope = Math.exp(-i / (bufferSize * 0.1));
-      data[i] = (Math.random() * 2 - 1) * envelope;
-    }
-    
-    const noiseSource = audioContext.createBufferSource();
-    noiseSource.buffer = buffer;
-    
-    // High-pass filter to make it more "clicky"
-    const highpass = audioContext.createBiquadFilter();
-    highpass.type = "highpass";
-    highpass.frequency.value = 1500;
-    
-    // Low-pass to remove harsh frequencies
-    const lowpass = audioContext.createBiquadFilter();
-    lowpass.type = "lowpass";
-    lowpass.frequency.value = 6000;
-    
-    const gainNode = audioContext.createGain();
-    gainNode.gain.value = 0.4;
-    
-    noiseSource.connect(highpass);
-    highpass.connect(lowpass);
-    lowpass.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    noiseSource.start();
-    noiseSource.stop(audioContext.currentTime + 0.03);
-  } catch {
-    // Audio not supported
-  }
-}
-
-// Play upgrade sound
-function playUpgradeSound() {
-  try {
-    const audioContext = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
-    
-    [440, 554, 659].forEach((freq, i) => {
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator.frequency.setValueAtTime(freq, audioContext.currentTime + i * 0.1);
-      oscillator.type = "sine";
-      
-      gainNode.gain.setValueAtTime(0, audioContext.currentTime + i * 0.1);
-      gainNode.gain.linearRampToValueAtTime(0.15, audioContext.currentTime + i * 0.1 + 0.02);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + i * 0.1 + 0.3);
-      
-      oscillator.start(audioContext.currentTime + i * 0.1);
-      oscillator.stop(audioContext.currentTime + i * 0.1 + 0.3);
-    });
-  } catch {
-    // Audio not supported
-  }
 }
 
 export default function CookieClicker({ onBack }: CookieClickerProps) {
@@ -151,7 +80,7 @@ export default function CookieClicker({ onBack }: CookieClickerProps) {
   }, [totalCookies, fireConfetti]);
 
   const handleCookieClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-    playClickSound();
+    playButtonClick();
     setCookies(c => c + cookiesPerClick);
     setTotalCookies(t => t + cookiesPerClick);
     

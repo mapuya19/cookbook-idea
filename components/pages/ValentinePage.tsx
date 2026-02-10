@@ -4,55 +4,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useRef, useCallback } from "react";
 import { useConfetti } from "../effects/Confetti";
 import FloatingHearts from "../effects/FloatingHearts";
+import { playDingSound } from "@/utils/sounds";
 
 interface ValentinePageProps {
   onNext: () => void;
   onPrev: () => void;
-}
-
-// Create a pleasant ding sound using Web Audio API
-function playDingSound() {
-  try {
-    const audioContext = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
-    
-    // Create oscillator for the main tone
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    // Bell-like frequency
-    oscillator.frequency.setValueAtTime(830, audioContext.currentTime); // High G
-    oscillator.type = "sine";
-    
-    // Quick attack, longer decay for bell sound
-    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-    gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.01);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
-    
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 1.5);
-    
-    // Add a second harmonic for richness
-    const oscillator2 = audioContext.createOscillator();
-    const gainNode2 = audioContext.createGain();
-    
-    oscillator2.connect(gainNode2);
-    gainNode2.connect(audioContext.destination);
-    
-    oscillator2.frequency.setValueAtTime(1660, audioContext.currentTime); // Octave up
-    oscillator2.type = "sine";
-    
-    gainNode2.gain.setValueAtTime(0, audioContext.currentTime);
-    gainNode2.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.01);
-    gainNode2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
-    
-    oscillator2.start(audioContext.currentTime);
-    oscillator2.stop(audioContext.currentTime + 1);
-  } catch {
-    // Audio not supported, that's okay
-  }
 }
 
 export default function ValentinePage({ onNext }: ValentinePageProps) {
