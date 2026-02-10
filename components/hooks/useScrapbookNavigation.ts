@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { playPageFlip } from "@/utils/sounds";
 
 export interface Page {
-  path: string;
+  path?: string;
   name: string;
   component?: React.ComponentType<any>;
 }
@@ -119,24 +119,30 @@ export function useRouterNavigation(options: Omit<NavigationOptions, 'onPageChan
 
   const goToPage = useCallback((pageIndex: number) => {
     if (pageIndex === currentPage) return;
+    const path = pages[pageIndex].path;
+    if (!path) return;
     playPageFlip();
     setDirection(pageIndex > currentPage ? 1 : -1);
-    router.push(pages[pageIndex].path);
+    router.push(path);
   }, [currentPage, router, pages]);
 
   const nextPage = useCallback(() => {
     if (currentPage < pages.length - 1) {
+      const path = pages[currentPage + 1].path;
+      if (!path) return;
       playPageFlip();
       setDirection(1);
-      router.push(pages[currentPage + 1].path);
+      router.push(path);
     }
   }, [currentPage, pages, router]);
 
   const prevPage = useCallback(() => {
     if (currentPage > 0) {
+      const path = pages[currentPage - 1].path;
+      if (!path) return;
       playPageFlip();
       setDirection(-1);
-      router.push(pages[currentPage - 1].path);
+      router.push(path);
     }
   }, [currentPage, pages, router]);
 
@@ -165,7 +171,8 @@ export function useRouterNavigation(options: Omit<NavigationOptions, 'onPageChan
           if (currentPage !== 0) {
             playPageFlip();
             setDirection(-1);
-            router.push("/");
+            const homePath = pages[0].path;
+            if (homePath) router.push(homePath);
           }
           break;
         case "Home":

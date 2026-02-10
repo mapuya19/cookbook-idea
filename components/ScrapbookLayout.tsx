@@ -9,6 +9,7 @@ import MusicPlayer from "./MusicPlayer";
 import { useRouterNavigation } from "./hooks/useScrapbookNavigation";
 import NavigationArrows from "./ui/NavigationArrows";
 import NavigationDots from "./ui/NavigationDots";
+import { playPageFlip } from "../utils/sounds";
 
 // External store for navigation state (direction and previous path)
 // This avoids using refs during render while maintaining proper React patterns

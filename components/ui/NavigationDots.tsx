@@ -43,8 +43,10 @@ function RouterNavigationDots({
     if (setDirection) {
       setDirection(index > currentPage ? 1 : -1);
     }
-    const path = (pages[index] as { path: string }).path;
-    router.push(path);
+    const path = pages[index].path;
+    if (path) {
+      router.push(path);
+    }
   };
 
   return (
@@ -58,7 +60,10 @@ function RouterNavigationDots({
     >
       {pages.map((page, index) => {
         const isActive = index === currentPage;
-        const path = (page as { path: string }).path;
+        const path = page.path;
+
+        // Skip pages without a path in router mode
+        if (!path) return null;
 
         return (
           <Link
