@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import BakingGame from "./BakingGame";
 import CookieClicker from "./CookieClicker";
 import CatchGame from "./CatchGame";
+import TriviaQuiz from "./TriviaQuiz";
 import { SECRET_GAME_UNLOCKED_KEY } from "./CoverPage";
 import { playClick } from "@/utils/sounds";
 
@@ -13,7 +14,7 @@ interface GameSelectProps {
   onPrev: () => void;
 }
 
-type GameType = "select" | "memory" | "clicker" | "catch";
+type GameType = "select" | "memory" | "clicker" | "catch" | "trivia";
 
 export default function GameSelect({ onPrev }: GameSelectProps) {
   const [currentGame, setCurrentGame] = useState<GameType>("select");
@@ -39,6 +40,10 @@ export default function GameSelect({ onPrev }: GameSelectProps) {
 
   if (currentGame === "catch") {
     return <CatchGame onBack={() => setCurrentGame("select")} />;
+  }
+
+  if (currentGame === "trivia") {
+    return <TriviaQuiz onBack={() => setCurrentGame("select")} />;
   }
 
   // Prevent flickering by waiting for localStorage check to complete
@@ -132,12 +137,45 @@ export default function GameSelect({ onPrev }: GameSelectProps) {
             </div>
           </motion.button>
 
+          {/* Trivia Quiz */}
+          <motion.button
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.35, duration: 0.5 }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => { playClick(); setCurrentGame("trivia"); }}
+            className="group bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2 touch-manipulation active:scale-[0.98]"
+          >
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blush-light to-blush/40 rounded-xl flex items-center justify-center text-2xl sm:text-3xl group-hover:scale-110 transition-transform shrink-0">
+                💕
+              </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="font-handwritten text-xl sm:text-2xl text-brown mb-0.5 sm:mb-1">
+                  Love Quiz
+                </h3>
+                <p className="font-body text-xs sm:text-sm text-brown-light">
+                  How well do you know me? Test your knowledge!
+                </p>
+              </div>
+              <svg
+                className="w-5 h-5 sm:w-6 sm:h-6 text-brown-light group-hover:text-blush group-hover:translate-x-1 transition-all shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </div>
+          </motion.button>
+
           {/* Secret Catch Game - only shown when unlocked */}
           {secretUnlocked && (
             <motion.button
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4, duration: 0.5, type: "spring" }}
+              transition={{ delay: 0.5, duration: 0.5, type: "spring" }}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => { playClick(); setCurrentGame("catch"); }}

@@ -561,3 +561,122 @@ export function playDingSound(): void {
   oscillator2.start(now);
   oscillator2.stop(now + 1);
 }
+
+/**
+ * Play a quiz correct answer celebration sound
+ * Happy ascending tones
+ */
+export function playQuizCorrect(): void {
+  if (prefersReducedMotion()) return;
+
+  const audioContext = getAudioContext();
+  if (!audioContext) return;
+
+  // Happy ascending tones
+  [523, 659, 784, 1047].forEach((freq, i) => {
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.frequency.setValueAtTime(freq, audioContext.currentTime + i * 0.08);
+    oscillator.type = "sine";
+
+    gainNode.gain.setValueAtTime(0, audioContext.currentTime + i * 0.08);
+    gainNode.gain.linearRampToValueAtTime(0.15, audioContext.currentTime + i * 0.08 + 0.02);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + i * 0.08 + 0.3);
+
+    oscillator.start(audioContext.currentTime + i * 0.08);
+    oscillator.stop(audioContext.currentTime + i * 0.08 + 0.3);
+  });
+}
+
+/**
+ * Play a quiz incorrect answer gentle sound
+ * Soft descending tone
+ */
+export function playQuizIncorrect(): void {
+  if (prefersReducedMotion()) return;
+
+  const audioContext = getAudioContext();
+  if (!audioContext) return;
+
+  // Gentle descending tone
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+
+  oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+  oscillator.frequency.exponentialRampToValueAtTime(300, audioContext.currentTime + 0.2);
+  oscillator.type = "sine";
+
+  gainNode.gain.setValueAtTime(0.15, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + 0.2);
+}
+
+/**
+ * Play a beat hit sound for rhythm game
+ * Crisp percussive tap sound
+ */
+export function playBeatHit(): void {
+  if (prefersReducedMotion()) return;
+
+  const audioContext = getAudioContext();
+  if (!audioContext) return;
+
+  const now = audioContext.currentTime;
+
+  // Crisp percussive hit
+  const osc = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(800, now);
+  osc.frequency.exponentialRampToValueAtTime(400, now + 0.1);
+
+  gain.gain.setValueAtTime(0.3, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+
+  osc.connect(gain);
+  gain.connect(audioContext.destination);
+
+  osc.start(now);
+  osc.stop(now + 0.15);
+}
+
+/**
+ * Play rhythm game combo sound
+ * Pitch increases with combo count
+ */
+export function playComboSound(combo: number): void {
+  if (prefersReducedMotion()) return;
+
+  const audioContext = getAudioContext();
+  if (!audioContext) return;
+
+  // Pitch increases with combo
+  const baseFreq = 400 + (Math.min(combo, 10) * 50);
+
+  const osc = audioContext.createOscillator();
+  const gain = audioContext.createGain();
+
+  osc.type = "triangle";
+  osc.frequency.setValueAtTime(baseFreq, audioContext.currentTime);
+  osc.frequency.setValueAtTime(baseFreq * 1.5, audioContext.currentTime + 0.1);
+
+  gain.gain.setValueAtTime(0.2, audioContext.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+
+  osc.connect(gain);
+  gain.connect(audioContext.destination);
+
+  osc.start(audioContext.currentTime);
+  osc.stop(audioContext.currentTime + 0.2);
+}
+

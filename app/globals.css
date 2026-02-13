@@ -11,7 +11,11 @@
   --soft-brown-light: #8B7B6F;
   --sage: #8AAA79;
   --sage-light: #B5D4A5;
-  
+
+  /* Error/incorrect color - soft pink/red */
+  --error-rose: #E57373;
+  --error-rose-light: #FFCDD2;
+
   /* Legacy aliases for compatibility */
   --blush-pink: var(--matcha);
   --blush-pink-light: var(--matcha-light);
@@ -38,7 +42,9 @@
   --color-brown-light: var(--soft-brown-light);
   --color-sage: var(--sage);
   --color-sage-light: var(--sage-light);
-  
+  --color-error-rose: var(--error-rose);
+  --color-error-rose-light: var(--error-rose-light);
+
   --font-handwritten: var(--font-gamja);
   --font-body: var(--font-quicksand);
 }
