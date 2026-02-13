@@ -15,6 +15,7 @@ const quicksand = Quicksand({
 });
 
 export const metadata: Metadata = {
+  metadataBase: "https://cookbook-idea.vercel.app",
   title: "Things You Bake, Things I Love",
   description: "A little baking scrapbook for Kezia",
   openGraph: {

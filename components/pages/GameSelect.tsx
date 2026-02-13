@@ -73,10 +73,7 @@ export default function GameSelect({ onPrev }: GameSelectProps) {
     <div className="scrapbook-page paper-texture relative overflow-hidden">
       <div className="relative z-10 w-full max-w-lg mx-auto px-6 text-center">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+        <div
           className="mb-8"
         >
           <h2 className="font-handwritten text-4xl sm:text-5xl text-brown mb-3">
@@ -85,17 +82,12 @@ export default function GameSelect({ onPrev }: GameSelectProps) {
           <p className="font-body text-brown-light">
             Pick a game to play, sweetie!
           </p>
-        </motion.div>
+        </div>
 
         {/* Game options */}
         <div className="flex flex-col gap-4 mb-8">
           {/* Memory Match */}
-          <motion.button
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
+          <button
             onClick={() => { playClick(); setCurrentGame("memory"); }}
             className="group bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2 touch-manipulation active:scale-[0.98]"
           >
@@ -116,19 +108,15 @@ export default function GameSelect({ onPrev }: GameSelectProps) {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </div>
-          </motion.button>
+          </button>
 
           {/* Cookie Clicker */}
-          <motion.button
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
+          <button
             onClick={() => { playClick(); setCurrentGame("clicker"); }}
             className="group bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 touch-manipulation active:scale-[0.98]"
           >
@@ -149,19 +137,15 @@ export default function GameSelect({ onPrev }: GameSelectProps) {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </div>
-          </motion.button>
+          </button>
 
           {/* Trivia Quiz */}
-          <motion.button
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.35, duration: 0.5 }}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.98 }}
+          <button
             onClick={() => { playClick(); setCurrentGame("trivia"); }}
             className="group bg-white rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2 touch-manipulation active:scale-[0.98]"
           >
@@ -182,20 +166,16 @@ export default function GameSelect({ onPrev }: GameSelectProps) {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </div>
-          </motion.button>
+          </button>
 
           {/* Secret Catch Game - only shown when unlocked */}
           {secretUnlocked && (
-            <motion.button
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.5, duration: 0.5, type: "spring" }}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.98 }}
+            <button
               onClick={() => { playClick(); setCurrentGame("catch"); }}
               className="group bg-linear-to-r from-blush/10 to-sage/10 border-2 border-dashed border-blush/30 rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2 touch-manipulation active:scale-[0.98]"
             >
@@ -221,31 +201,27 @@ export default function GameSelect({ onPrev }: GameSelectProps) {
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </div>
-            </motion.button>
+            </button>
           )}
         </div>
 
         {/* Back to scrapbook */}
-        <motion.button
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+        <button
           onClick={() => { playClick(); onPrev(); }}
           className="px-5 sm:px-6 py-2.5 sm:py-3 bg-brown-light/20 text-brown font-body font-semibold rounded-full shadow-md hover:shadow-lg hover:bg-brown-light/30 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brown focus-visible:ring-offset-2 touch-manipulation active:scale-95"
         >
           Back to Scrapbook
-        </motion.button>
+        </button>
 
         {/* Decorative elements - positioned in far corners to avoid content */}
         <motion.div
-          initial={{ opacity: 0, rotate: -10 }}
-          animate={{ opacity: 0.1, rotate: -10 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.1 }}
           transition={{ delay: 0.8 }}
           className="absolute top-2 right-2 text-4xl pointer-events-none hidden xl:block"
           aria-hidden="true"
@@ -254,8 +230,8 @@ export default function GameSelect({ onPrev }: GameSelectProps) {
         </motion.div>
         
         <motion.div
-          initial={{ opacity: 0, rotate: 15 }}
-          animate={{ opacity: 0.1, rotate: 15 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.1 }}
           transition={{ delay: 1 }}
           className="absolute bottom-2 left-2 text-4xl pointer-events-none hidden xl:block"
           aria-hidden="true"
