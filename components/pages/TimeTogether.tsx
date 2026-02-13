@@ -59,21 +59,18 @@ export default function TimeTogether({ onNext, onPrev }: TimeTogetherProps) {
   }, []);
 
   const TimeCard = ({ value, label, delay }: { value: number; label: string; delay: number }) => (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8, y: 20 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ delay, duration: 0.5, type: "spring", stiffness: 200 }}
+    <div
       className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg flex-1 min-w-[100px] sm:min-w-[120px] text-center"
     >
       <div
-        className="font-handwritten text-3xl sm:text-4xl md:text-5xl text-blush mb-2 transition-transform duration-200"
+        className="font-handwritten text-3xl sm:text-4xl md:text-5xl text-blush mb-2"
       >
         {value.toLocaleString()}
       </div>
       <div className="font-body text-sm sm:text-base text-brown-light">
         {label}
       </div>
-    </motion.div>
+    </div>
   );
 
   return (
