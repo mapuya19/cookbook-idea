@@ -36,8 +36,8 @@ const pages = [
   { component: FutureRecipes, name: "Future Recipes" },
   { component: ScratchCard, name: "Scratch Card" },
   { component: PhotoBooth, name: "Photo Booth" },
-  { component: ValentinePage, name: "Valentine" },
   { component: TimeTogether, name: "Time Together" },
+  { component: ValentinePage, name: "Valentine" },
   { component: GameSelect, name: "Games" },
 ];
 
