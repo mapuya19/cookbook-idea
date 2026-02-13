@@ -2,6 +2,30 @@
 
 import { motion } from "framer-motion";
 import Polaroid from "../ui/Polaroid";
+import { LoveNoteHeart } from "../effects/LoveNotes";
+
+const FloatingHeart = ({ delay, x, y, size, rotation }: { delay: number; x: string; y: string; size: number; rotation: number }) => (
+  <motion.div
+    className="absolute pointer-events-none"
+    style={{ left: x, top: y }}
+    initial={{ opacity: 0, scale: 0 }}
+    animate={{ 
+      opacity: 0.6, 
+      scale: 1,
+      y: [0, -20, 0],
+      rotate: [rotation, rotation - 5, rotation]
+    }}
+    transition={{
+      opacity: { delay, duration: 0.5 },
+      scale: { delay, duration: 0.5, type: "spring", stiffness: 200 },
+      y: { delay: delay + 0.3, duration: 4, repeat: Infinity, ease: "easeInOut" },
+      rotate: { delay: delay + 0.3, duration: 5, repeat: Infinity, ease: "easeInOut" }
+    }}
+    aria-hidden="true"
+  >
+    <span style={{ fontSize: size, color: "#A8C69F" }}>🍵</span>
+  </motion.div>
+);
 
 interface SignatureBakesProps {
   onNext: () => void;
@@ -103,29 +127,11 @@ export default function SignatureBakes({ onNext }: SignatureBakesProps) {
           </svg>
         </motion.div>
 
-        {/* Continue hint */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 0.6 }}
-          className="text-center mt-8 sm:mt-12"
-        >
-          <button
-            onClick={onNext}
-            className="font-handwritten text-lg text-brown-light/60 hover:text-blush transition-colors flex items-center gap-2 mx-auto group focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2 rounded-lg px-2 py-1"
-          >
-            keep flipping
-            <svg
-              className="w-4 h-4 group-hover:translate-x-1 transition-transform"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </motion.div>
+        <LoveNoteHeart x="5%" y="20%" delay={2} rotation={-5} />
+
+        <FloatingHeart delay={0.8} x="8%" y="30%" size={20} rotation={-10} />
+        <FloatingHeart delay={1.2} x="85%" y="15%" size={16} rotation={5} />
+        <FloatingHeart delay={1.5} x="75%" y="70%" size={18} rotation={-8} />
       </div>
     </div>
   );

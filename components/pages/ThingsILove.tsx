@@ -2,6 +2,30 @@
 
 import { motion } from "framer-motion";
 import StickyNote from "../ui/StickyNote";
+import { LoveNoteHeart } from "../effects/LoveNotes";
+
+const FloatingHeart = ({ delay, x, y, size, rotation }: { delay: number; x: string; y: string; size: number; rotation: number }) => (
+  <motion.div
+    className="absolute pointer-events-none"
+    style={{ left: x, top: y }}
+    initial={{ opacity: 0, scale: 0 }}
+    animate={{ 
+      opacity: 0.6, 
+      scale: 1,
+      y: [0, -20, 0],
+      rotate: [rotation, rotation - 5, rotation]
+    }}
+    transition={{
+      opacity: { delay, duration: 0.5 },
+      scale: { delay, duration: 0.5, type: "spring", stiffness: 200 },
+      y: { delay: delay + 0.3, duration: 4, repeat: Infinity, ease: "easeInOut" },
+      rotate: { delay: delay + 0.3, duration: 5, repeat: Infinity, ease: "easeInOut" }
+    }}
+    aria-hidden="true"
+  >
+    <span style={{ fontSize: size, color: "#A8C69F" }}>🍵</span>
+  </motion.div>
+);
 
 interface ThingsILoveProps {
   onNext: () => void;
@@ -130,29 +154,13 @@ export default function ThingsILove({ onNext }: ThingsILoveProps) {
           <span className="text-2xl">🍡</span>
         </motion.div>
 
-        {/* Continue hint */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 0.6 }}
-          className="text-center mt-4 sm:mt-8"
-        >
-          <button
-            onClick={onNext}
-            className="font-handwritten text-lg text-brown-light/60 hover:text-blush transition-colors flex items-center gap-2 mx-auto group focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2 rounded-lg px-2 py-1"
-          >
-            there&apos;s more
-            <svg
-              className="w-4 h-4 group-hover:translate-x-1 transition-transform"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-        </motion.div>
+        <LoveNoteHeart x="10%" y="15%" delay={2.5} rotation={8} />
+        <LoveNoteHeart x="85%" y="70%" delay={2.8} rotation={-3} />
+
+        <FloatingHeart delay={0.9} x="5%" y="40%" size={18} rotation={-7} />
+        <FloatingHeart delay={1.3} x="92%" y="25%" size={20} rotation={8} />
+        <FloatingHeart delay={1.6} x="12%" y="75%" size={16} rotation={5} />
+        <FloatingHeart delay={1.9} x="88%" y="60%" size={17} rotation={-6} />
       </div>
     </div>
   );

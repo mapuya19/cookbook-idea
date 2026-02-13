@@ -9,6 +9,29 @@ import TriviaQuiz from "./TriviaQuiz";
 import { SECRET_GAME_UNLOCKED_KEY } from "./CoverPage";
 import { playClick } from "@/utils/sounds";
 
+const FloatingHeart = ({ delay, x, y, size, rotation }: { delay: number; x: string; y: string; size: number; rotation: number }) => (
+  <motion.div
+    className="absolute pointer-events-none"
+    style={{ left: x, top: y }}
+    initial={{ opacity: 0, scale: 0 }}
+    animate={{ 
+      opacity: 0.6, 
+      scale: 1,
+      y: [0, -20, 0],
+      rotate: [rotation, rotation - 5, rotation]
+    }}
+    transition={{
+      opacity: { delay, duration: 0.5 },
+      scale: { delay, duration: 0.5, type: "spring", stiffness: 200 },
+      y: { delay: delay + 0.3, duration: 4, repeat: Infinity, ease: "easeInOut" },
+      rotate: { delay: delay + 0.3, duration: 5, repeat: Infinity, ease: "easeInOut" }
+    }}
+    aria-hidden="true"
+  >
+    <span style={{ fontSize: size, color: "#A8C69F" }}>🍵</span>
+  </motion.div>
+);
+
 interface GameSelectProps {
   onNext: () => void;
   onPrev: () => void;
@@ -244,6 +267,10 @@ export default function GameSelect({ onPrev }: GameSelectProps) {
         >
           🎂
         </motion.div>
+
+        <FloatingHeart delay={0.9} x="6%" y="32%" size={18} rotation={-6} />
+        <FloatingHeart delay={1.3} x="91%" y="20%" size={20} rotation={7} />
+        <FloatingHeart delay={1.6} x="84%" y="76%" size={16} rotation={-8} />
       </div>
     </div>
   );

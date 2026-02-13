@@ -9,6 +9,7 @@ import FutureRecipes from "./pages/FutureRecipes";
 import ScratchCard from "./pages/ScratchCard";
 import PhotoBooth from "./pages/PhotoBooth";
 import ValentinePage from "./pages/ValentinePage";
+import TimeTogether from "./pages/TimeTogether";
 import GameSelect from "./pages/GameSelect";
 import LoadingScreen from "./LoadingScreen";
 import CursorTrail from "./effects/CursorTrail";
@@ -36,6 +37,7 @@ const pages = [
   { component: ScratchCard, name: "Scratch Card" },
   { component: PhotoBooth, name: "Photo Booth" },
   { component: ValentinePage, name: "Valentine" },
+  { component: TimeTogether, name: "Time Together" },
   { component: GameSelect, name: "Games" },
 ];
 

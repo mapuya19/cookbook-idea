@@ -3,6 +3,30 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useRef, useState, useCallback, useEffect } from "react";
 import { playCameraShutter } from "@/utils/sounds";
+import { LoveNoteHeart } from "../effects/LoveNotes";
+
+const FloatingHeart = ({ delay, x, y, size, rotation }: { delay: number; x: string; y: string; size: number; rotation: number }) => (
+  <motion.div
+    className="absolute pointer-events-none"
+    style={{ left: x, top: y }}
+    initial={{ opacity: 0, scale: 0 }}
+    animate={{ 
+      opacity: 0.6, 
+      scale: 1,
+      y: [0, -20, 0],
+      rotate: [rotation, rotation - 5, rotation]
+    }}
+    transition={{
+      opacity: { delay, duration: 0.5 },
+      scale: { delay, duration: 0.5, type: "spring", stiffness: 200 },
+      y: { delay: delay + 0.3, duration: 4, repeat: Infinity, ease: "easeInOut" },
+      rotate: { delay: delay + 0.3, duration: 5, repeat: Infinity, ease: "easeInOut" }
+    }}
+    aria-hidden="true"
+  >
+    <span style={{ fontSize: size, color: "#A8C69F" }}>🍵</span>
+  </motion.div>
+);
 
 interface PhotoBoothProps {
   onNext: () => void;
@@ -869,6 +893,13 @@ export default function PhotoBooth({ onNext }: PhotoBoothProps) {
         >
           🎞️
         </motion.div>
+
+        <LoveNoteHeart x="5%" y="40%" delay={3.5} rotation={10} />
+        <LoveNoteHeart x="90%" y="20%" delay={3.8} rotation={-8} />
+
+        <FloatingHeart delay={1.0} x="4%" y="28%" size={18} rotation={-7} />
+        <FloatingHeart delay={1.4} x="93%" y="15%" size={20} rotation={9} />
+        <FloatingHeart delay={1.7} x="78%" y="82%" size={16} rotation={-6} />
       </div>
     </div>
   );

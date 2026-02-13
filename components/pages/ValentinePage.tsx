@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useRef, useCallback } from "react";
 import { useConfetti } from "../effects/Confetti";
 import FloatingHearts from "../effects/FloatingHearts";
+import { LoveNoteHeart } from "../effects/LoveNotes";
 import { playDingSound } from "@/utils/sounds";
 
 interface ValentinePageProps {
@@ -227,6 +228,9 @@ export default function ValentinePage({ onNext }: ValentinePageProps) {
       >
         <span className="text-3xl">🍡</span>
       </motion.div>
+
+      <LoveNoteHeart x="8%" y="50%" delay={3} rotation={5} />
+      <LoveNoteHeart x="88%" y="30%" delay={3.3} rotation={-5} />
     </div>
   );
 }

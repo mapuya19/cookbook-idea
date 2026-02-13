@@ -4,6 +4,30 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useRef, useState, useEffect, useCallback } from "react";
 import { playScratchSound, playRevealSound } from "@/utils/sounds";
 import { useConfetti } from "../effects/Confetti";
+import { LoveNoteHeart } from "../effects/LoveNotes";
+
+const FloatingHeart = ({ delay, x, y, size, rotation }: { delay: number; x: string; y: string; size: number; rotation: number }) => (
+  <motion.div
+    className="absolute pointer-events-none"
+    style={{ left: x, top: y }}
+    initial={{ opacity: 0, scale: 0 }}
+    animate={{ 
+      opacity: 0.6, 
+      scale: 1,
+      y: [0, -20, 0],
+      rotate: [rotation, rotation - 5, rotation]
+    }}
+    transition={{
+      opacity: { delay, duration: 0.5 },
+      scale: { delay, duration: 0.5, type: "spring", stiffness: 200 },
+      y: { delay: delay + 0.3, duration: 4, repeat: Infinity, ease: "easeInOut" },
+      rotate: { delay: delay + 0.3, duration: 5, repeat: Infinity, ease: "easeInOut" }
+    }}
+    aria-hidden="true"
+  >
+    <span style={{ fontSize: size, color: "#A8C69F" }}>🍵</span>
+  </motion.div>
+);
 
 interface ScratchCardProps {
   onNext: () => void;
@@ -331,6 +355,12 @@ export default function ScratchCard({ onNext }: ScratchCardProps) {
         >
           💝
         </motion.div>
+
+        <LoveNoteHeart x="15%" y="60%" delay={3} rotation={5} />
+
+        <FloatingHeart delay={0.9} x="6%" y="35%" size={19} rotation={-8} />
+        <FloatingHeart delay={1.2} x="91%" y="22%" size={17} rotation={6} />
+        <FloatingHeart delay={1.5} x="82%" y="78%" size={21} rotation={-10} />
       </div>
     </div>
   );
