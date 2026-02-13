@@ -16,18 +16,18 @@ const quicksand = Quicksand({
 
 export const metadata: Metadata = {
   metadataBase: "https://cookbook-idea.vercel.app",
-  title: "Things You Bake, Things I Love",
-  description: "A little baking scrapbook for Kezia",
+  title: "Baking Scrapbook - Things You Bake, Things I Love",
+  description: "A digital baking scrapbook filled with love, memories, and games for Valentine's Day",
   openGraph: {
-    title: "Things You Bake, Things I Love",
-    description: "A digital baking scrapbook filled with love, memories, and games",
+    title: "Baking Scrapbook - Things You Bake, Things I Love",
+    description: "A digital baking scrapbook filled with love, memories, and games for Valentine's Day",
     url: "https://cookbook-idea.vercel.app",
     siteName: "Baking Scrapbook",
     images: [
       {
         url: "/opengraph-cookie.svg",
-        width: 180,
-        height: 180,
+        width: 1200,
+        height: 630,
         alt: "Baking Scrapbook - Cookie Icon"
       }
     ],
@@ -36,8 +36,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Things You Bake, Things I Love",
-    description: "A digital baking scrapbook filled with love, memories, and games",
+    title: "Baking Scrapbook - Things You Bake, Things I Love",
+    description: "A digital baking scrapbook filled with love, memories, and games for Valentine's Day",
     images: ["/opengraph-cookie.svg"],
   },
   icons: {

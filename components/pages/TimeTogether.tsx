@@ -65,15 +65,11 @@ export default function TimeTogether({ onNext, onPrev }: TimeTogetherProps) {
       transition={{ delay, duration: 0.5, type: "spring", stiffness: 200 }}
       className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg flex-1 min-w-[100px] sm:min-w-[120px] text-center"
     >
-      <motion.div
-        key={value}
-        initial={{ scale: 1 }}
-        animate={{ scale: [1, 1.05, 1] }}
-        transition={{ duration: 0.3 }}
-        className="font-handwritten text-3xl sm:text-4xl md:text-5xl text-blush mb-2"
+      <div
+        className="font-handwritten text-3xl sm:text-4xl md:text-5xl text-blush mb-2 transition-transform duration-200"
       >
         {value.toLocaleString()}
-      </motion.div>
+      </div>
       <div className="font-body text-sm sm:text-base text-brown-light">
         {label}
       </div>
