@@ -5,26 +5,21 @@ import Polaroid from "../ui/Polaroid";
 import { LoveNoteHeart } from "../effects/LoveNotes";
 
 const FloatingHeart = ({ delay, x, y, size, rotation }: { delay: number; x: string; y: string; size: number; rotation: number }) => (
-  <motion.div
-    className="absolute pointer-events-none"
-    style={{ left: x, top: y }}
-    initial={{ opacity: 0, scale: 0 }}
-    animate={{ 
-      opacity: 0.6, 
-      scale: 1,
-      y: [0, -20, 0],
-      rotate: [rotation, rotation - 5, rotation]
-    }}
-    transition={{
-      opacity: { delay, duration: 0.5 },
-      scale: { delay, duration: 0.5, type: "spring", stiffness: 200 },
-      y: { delay: delay + 0.3, duration: 4, repeat: Infinity, ease: "easeInOut" },
-      rotate: { delay: delay + 0.3, duration: 5, repeat: Infinity, ease: "easeInOut" }
+  <div
+    className="absolute pointer-events-none animate-float-slow"
+    style={{
+      left: x,
+      top: y,
+      fontSize: size,
+      color: "#A8C69F",
+      animationDelay: `${delay}s`,
+      opacity: '0.6',
+      transform: `rotate(${rotation}deg)`
     }}
     aria-hidden="true"
   >
-    <span style={{ fontSize: size, color: "#A8C69F" }}>🍵</span>
-  </motion.div>
+    🍵
+  </div>
 );
 
 interface SignatureBakesProps {

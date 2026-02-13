@@ -24,12 +24,13 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
   const currentQuestion = TRIVIA_QUESTIONS[currentQuestionIndex];
   const totalQuestions = TRIVIA_QUESTIONS.length;
   const isAnswered = answeredQuestions.has(currentQuestionIndex);
-  const progress = ((currentQuestionIndex + (isAnswered ? 1 : 0)) / totalQuestions) * 100;
 
-  // Calculate correct answers count
-  const correctAnswers = useMemo(() => {
-    return Math.floor((score / 1000) * totalQuestions); // Rough estimate
-  }, [score, totalQuestions]);
+  const progress = useMemo(() => {
+    return ((currentQuestionIndex + (isAnswered ? 1 : 0)) / totalQuestions) * 100;
+  }, [currentQuestionIndex, isAnswered, totalQuestions]);
+
+  // Calculate correct answers count - simplified to avoid recalc
+  const correctAnswers = Math.floor((score / 1000) * totalQuestions);
 
   const handleAnswer = useCallback((answer: typeof currentQuestion.answers[0]) => {
     if (isAnswered) return;
@@ -218,12 +219,10 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
           </h2>
 
           {/* Progress Bar */}
-          <div className="w-full bg-brown-light/20 rounded-full h-3 mt-4">
-            <motion.div
-              className="bg-blush h-3 rounded-full"
-              initial={{ width: 0 }}
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.5 }}
+          <div className="w-full bg-brown-light/20 rounded-full h-3 mt-4 overflow-hidden">
+            <div
+              className="bg-blush h-3 rounded-full transition-all duration-500 ease-out"
+              style={{ width: `${progress}%` }}
             />
           </div>
 

@@ -5,26 +5,21 @@ import { useState, useEffect } from "react";
 import { LoveNoteHeart } from "../effects/LoveNotes";
 
 const FloatingHeart = ({ delay, x, y, size, rotation }: { delay: number; x: string; y: string; size: number; rotation: number }) => (
-  <motion.div
-    className="absolute pointer-events-none"
-    style={{ left: x, top: y }}
-    initial={{ opacity: 0, scale: 0 }}
-    animate={{ 
-      opacity: 0.6, 
-      scale: 1,
-      y: [0, -20, 0],
-      rotate: [rotation, rotation - 5, rotation]
-    }}
-    transition={{
-      opacity: { delay, duration: 0.5 },
-      scale: { delay, duration: 0.5, type: "spring", stiffness: 200 },
-      y: { delay: delay + 0.3, duration: 4, repeat: Infinity, ease: "easeInOut" },
-      rotate: { delay: delay + 0.3, duration: 5, repeat: Infinity, ease: "easeInOut" }
+  <div
+    className="absolute pointer-events-none animate-float-slow"
+    style={{
+      left: x,
+      top: y,
+      fontSize: size,
+      color: "#A8C69F",
+      animationDelay: `${delay}s`,
+      opacity: '0.6',
+      transform: `rotate(${rotation}deg)`
     }}
     aria-hidden="true"
   >
-    <span style={{ fontSize: size, color: "#A8C69F" }}>🍵</span>
-  </motion.div>
+    🍵
+  </div>
 );
 
 interface TimeTogetherProps {
@@ -38,10 +33,11 @@ interface TimeUnits {
   days: number;
   hours: number;
   minutes: number;
+  seconds: number;
 }
 
 export default function TimeTogether({ onNext, onPrev }: TimeTogetherProps) {
-  const [timeUnits, setTimeUnits] = useState<TimeUnits>({ days: 0, hours: 0, minutes: 0 });
+  const [timeUnits, setTimeUnits] = useState<TimeUnits>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
     const updateTime = () => {
@@ -51,12 +47,13 @@ export default function TimeTogether({ onNext, onPrev }: TimeTogetherProps) {
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
       const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-      setTimeUnits({ days, hours, minutes });
+      setTimeUnits({ days, hours, minutes, seconds });
     };
 
     updateTime();
-    const interval = setInterval(updateTime, 60000);
+    const interval = setInterval(updateTime, 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -66,7 +63,7 @@ export default function TimeTogether({ onNext, onPrev }: TimeTogetherProps) {
       initial={{ opacity: 0, scale: 0.8, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay, duration: 0.5, type: "spring", stiffness: 200 }}
-      className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg flex-1 min-w-[120px] text-center"
+      className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg flex-1 min-w-[100px] sm:min-w-[120px] text-center"
     >
       <motion.div
         key={value}
@@ -109,6 +106,7 @@ export default function TimeTogether({ onNext, onPrev }: TimeTogetherProps) {
           <TimeCard value={timeUnits.days} label="Days" delay={0.4} />
           <TimeCard value={timeUnits.hours} label="Hours" delay={0.5} />
           <TimeCard value={timeUnits.minutes} label="Minutes" delay={0.6} />
+          <TimeCard value={timeUnits.seconds} label="Seconds" delay={0.7} />
         </motion.div>
 
         <motion.p
