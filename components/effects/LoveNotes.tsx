@@ -57,7 +57,7 @@ export function LoveNoteHeart({ x, y, delay, rotation }: { x: string; y: string;
           className="text-2xl sm:text-3xl"
           style={{ color: "#A8C69F" }}
         >
-          💚
+          🍣
         </motion.span>
       </motion.button>
 
@@ -95,7 +95,7 @@ function LoveNoteModal({ note, onClose }: { note: string; onClose: () => void })
             className="text-5xl mb-4 inline-block"
             style={{ color: "#A8C69F" }}
           >
-            💚
+            🍣
           </motion.span>
           <motion.p
             initial={{ opacity: 0, y: 10 }}
@@ -114,7 +114,7 @@ function LoveNoteModal({ note, onClose }: { note: string; onClose: () => void })
             onClick={onClose}
             className="px-6 py-2.5 bg-sage text-white font-body font-semibold rounded-full shadow-lg hover:shadow-xl transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-sage focus-visible:ring-offset-2 touch-manipulation active:scale-95"
           >
-            Aww, thanks! 💚
+            Aww, thanks!
           </motion.button>
         </div>
       </motion.div>
