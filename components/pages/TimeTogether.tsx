@@ -111,29 +111,21 @@ export default function TimeTogether({ onNext, onPrev }: TimeTogetherProps) {
           Every minute with you is a gift I treasure forever
         </motion.p>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2 }}
-          className="flex justify-center gap-4 mt-8"
-        >
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={onPrev}
-            className="px-5 py-2.5 bg-brown-light/20 text-brown font-body font-semibold rounded-full shadow-md hover:shadow-lg hover:bg-brown-light/30 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brown focus-visible:ring-offset-2 touch-manipulation active:scale-95"
-          >
-            Previous
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={onNext}
-            className="px-5 py-2.5 bg-blush text-white font-body font-semibold rounded-full shadow-md hover:shadow-lg transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2 touch-manipulation active:scale-95"
-          >
-            Continue
-          </motion.button>
-        </motion.div>
+         <motion.div
+           initial={{ opacity: 0 }}
+           animate={{ opacity: 1 }}
+           transition={{ delay: 1.2 }}
+           className="flex justify-center gap-4 mt-8"
+         >
+           <motion.button
+             whileHover={{ scale: 1.05 }}
+             whileTap={{ scale: 0.95 }}
+             onClick={onNext}
+             className="px-5 py-2.5 bg-blush text-white font-body font-semibold rounded-full shadow-md hover:shadow-lg transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2 touch-manipulation active:scale-95"
+           >
+             Continue
+           </motion.button>
+         </motion.div>
       </div>
 
       <motion.div
