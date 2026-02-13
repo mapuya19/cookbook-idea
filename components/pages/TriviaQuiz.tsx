@@ -29,7 +29,6 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
     return ((currentQuestionIndex + (isAnswered ? 1 : 0)) / totalQuestions) * 100;
   }, [currentQuestionIndex, isAnswered, totalQuestions]);
 
-  // Calculate correct answers count - simplified to avoid recalc
   const correctAnswers = Math.floor((score / 1000) * totalQuestions);
 
   const handleAnswer = useCallback((answer: typeof currentQuestion.answers[0]) => {
@@ -37,13 +36,11 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
 
     const isCorrect = answer.isCorrect;
 
-    // Update state
     setSelectedAnswer(answer.id);
     setAnsweredQuestions(prev => new Set([...prev, currentQuestionIndex]));
     setShowFeedback(true);
     setLastAnswerCorrect(isCorrect);
 
-    // Scoring with streak bonus
     if (isCorrect) {
       const streakBonus = streak * 10;
       const points = 100 + streakBonus;
@@ -51,7 +48,6 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
       setStreak(s => s + 1);
       playQuizCorrect();
 
-      // Mini confetti for streaks
       if (streak >= 2) {
         fireConfetti();
       }
@@ -60,7 +56,6 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
       playQuizIncorrect();
     }
 
-    // Auto-advance after delay
     setTimeout(() => {
       setShowFeedback(false);
       setSelectedAnswer(null);
@@ -91,14 +86,12 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
     answer: typeof currentQuestion.answers[0],
     isSelected: boolean
   ) => {
-    // Keep the exact same base classes for all states
-    const baseClasses = 'w-full p-4 rounded-xl text-left transition-all shadow-md';
+    const baseClasses = 'w-full p-4 rounded-xl text-left transition-all shadow-md hover:scale-102 active:scale-98';
 
     if (!isAnswered) {
       return `${baseClasses} bg-white`;
     }
 
-    // After answering - ONLY change color, nothing else
     if (answer.isCorrect) {
       return `${baseClasses} bg-sage text-white`;
     }
@@ -119,30 +112,20 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
     return (
       <div className="scrapbook-page paper-texture relative overflow-hidden">
         <div className="relative z-10 w-full max-w-lg mx-auto px-4 py-8">
-          {/* Header */}
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center mb-8"
-          >
+          <div>
             <h2 className="font-handwritten text-4xl sm:text-5xl text-brown mb-2">
               Quiz Complete! 🎉
             </h2>
             <p className="font-body text-brown-light">
               Here's how you did
             </p>
-          </motion.div>
+          </div>
 
-          {/* Score Circle */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl p-8 shadow-lg text-center mb-6"
-          >
+          <div className="bg-white rounded-2xl p-8 shadow-lg text-center mb-6">
             <div className="relative w-40 h-40 mx-auto mb-6">
               <svg className="w-full h-full transform -rotate-90">
                 <circle cx="80" cy="80" r="70" stroke="#E8C9A0" strokeWidth="12" fill="none" />
-                <motion.circle
+                <circle
                   cx="80"
                   cy="80"
                   r="70"
@@ -150,16 +133,17 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
                   strokeWidth="12"
                   fill="none"
                   strokeDasharray={`${finalScore * 4.4} 440`}
-                  initial={{ strokeDashoffset: 440 }}
-                  animate={{ strokeDashoffset: 440 - (finalScore * 4.4) }}
-                  transition={{ duration: 1.5, ease: "easeOut" }}
+                  style={{
+                    strokeDashoffset: 440 - (finalScore * 4.4),
+                    transition: 'strokeDashoffset 1.5s ease-out'
+                  }}
                 />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="font-handwritten text-4xl text-blush">
+                    {finalScore}%
+                  </span>
+                </div>
               </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="font-handwritten text-4xl text-blush">
-                  {finalScore}%
-                </span>
-              </div>
             </div>
 
             <h3 className="font-handwritten text-3xl text-brown mb-2">
@@ -168,38 +152,27 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
             <p className="font-body text-brown-light mb-4">
               You answered {answeredQuestions.size} out of {totalQuestions} questions
             </p>
-
             <div className="bg-cream rounded-xl p-4 mb-6">
               <p className="font-body text-brown">
                 {getPersonalMessage(finalScore)}
               </p>
             </div>
-          </motion.div>
 
-          {/* Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-3 justify-center"
-          >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={restartQuiz}
-              className="px-6 py-3 bg-blush text-white font-body font-semibold rounded-full shadow-md hover:shadow-lg transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2"
-            >
-              Play Again
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={onBack}
-              className="px-6 py-3 bg-brown-light/20 text-brown font-body font-semibold rounded-full shadow-md hover:shadow-lg hover:bg-brown-light/30 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brown focus-visible:ring-offset-2"
-            >
-              Back to Games
-            </motion.button>
-          </motion.div>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={restartQuiz}
+                className="px-6 py-3 bg-blush text-white font-body font-semibold rounded-full shadow-md hover:scale-105 hover:shadow-lg active:scale-95 transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-blush focus-visible:ring-offset-2"
+              >
+                Play Again
+              </button>
+              <button
+                onClick={onBack}
+                className="px-6 py-3 bg-brown-light/20 text-brown font-body font-semibold rounded-full shadow-md hover:scale-105 hover:bg-brown-light/30 hover:shadow-lg transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brown focus-visible:ring-offset-2"
+              >
+                Back to Games
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -208,17 +181,11 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
   return (
     <div className="scrapbook-page paper-texture relative overflow-hidden">
       <div className="relative z-10 w-full max-w-lg mx-auto px-4 py-8">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-6"
-        >
+        <div className="text-center mb-6">
           <h2 className="font-handwritten text-4xl sm:text-5xl text-brown mb-2">
             How well do you know Matthew? 💕
           </h2>
 
-          {/* Progress Bar */}
           <div className="w-full bg-brown-light/20 rounded-full h-3 mt-4 overflow-hidden">
             <div
               className="bg-blush h-3 rounded-full transition-all duration-500 ease-out"
@@ -229,25 +196,16 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
           <p className="font-body text-sm text-brown-light mt-2">
             Question {currentQuestionIndex + 1} of {totalQuestions}
           </p>
-        </motion.div>
+        </div>
 
-        {/* Streak Indicator */}
-        <AnimatePresence>
-          {streak > 1 && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              className="text-center mb-4"
-            >
-              <span className="font-body text-sm text-brown">
-                🔥 {streak} in a row!
-              </span>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {streak > 1 && (
+          <div className="text-center mb-4">
+            <span className="font-body text-sm text-brown">
+              🔥 {streak} in a row!
+            </span>
+          </div>
+        )}
 
-        {/* Question Card */}
         <AnimatePresence mode="wait">
           <motion.div
             key={currentQuestion.id}
@@ -257,29 +215,20 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
             transition={{ duration: 0.3 }}
             className="bg-white rounded-2xl p-6 shadow-lg mb-6"
           >
-            {/* Category Badge */}
             <div className="flex justify-center mb-4">
               <span className={`px-3 py-1 rounded-full text-xs font-body ${getCategoryColor(currentQuestion.category)}`}>
                 {currentQuestion.category}
               </span>
             </div>
 
-            {/* Question Text */}
             <h3 className="font-handwritten text-2xl text-brown text-center mb-6">
               {currentQuestion.question}
             </h3>
 
-            {/* Answer Options */}
             <div className="space-y-3">
               {currentQuestion.answers.map((answer, index) => (
-                <motion.button
+                <button
                   key={answer.id}
-                  layout="position"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={isAnswered ? undefined : { scale: 1.02 }}
-                  whileTap={isAnswered ? undefined : { scale: 0.98 }}
                   onClick={() => handleAnswer(answer)}
                   disabled={isAnswered}
                   className={getAnswerButtonClass(answer, selectedAnswer === answer.id)}
@@ -287,51 +236,36 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
                   <div className="flex items-center gap-3">
                     <span className={`
                       w-8 h-8 rounded-full flex items-center justify-center font-body font-semibold text-sm flex-shrink-0
-                      ${isAnswered && answer.isCorrect ? 'bg-white/20' : 'bg-brown-light/20'}
+                      ${isAnswered && answer.isCorrect ? 'bg-sage text-white' : 'bg-brown-light/20'}
                     `}>
                       {answer.id.toUpperCase()}
                     </span>
                     <span className="font-body flex-1">{answer.text}</span>
                     {isAnswered && answer.isCorrect && (
-                      <motion.span
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="text-2xl flex-shrink-0"
-                      >
+                      <span className="text-2xl flex-shrink-0">
                         ✅
-                      </motion.span>
+                      </span>
                     )}
                     {isAnswered && !answer.isCorrect && selectedAnswer === answer.id && (
-                      <motion.span
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        className="text-2xl flex-shrink-0"
-                      >
+                      <span className="text-2xl flex-shrink-0">
                         ❌
-                      </motion.span>
+                      </span>
                     )}
                   </div>
-                </motion.button>
+                </button>
               ))}
             </div>
           </motion.div>
         </AnimatePresence>
 
-        {/* Back Button */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center"
-        >
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+        <div className="text-center">
+          <button
             onClick={onBack}
             className="px-5 py-2.5 bg-brown-light/20 text-brown font-body font-semibold rounded-full shadow-md hover:shadow-lg hover:bg-brown-light/30 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-brown focus-visible:ring-offset-2"
           >
             Back to Games
-          </motion.button>
-        </motion.div>
+          </button>
+        </div>
       </div>
     </div>
   );

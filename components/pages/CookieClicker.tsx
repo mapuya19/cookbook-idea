@@ -188,14 +188,13 @@ export default function CookieClicker({ onBack }: CookieClickerProps) {
 
         {/* Main cookie button */}
         <div className="flex justify-center mb-4 sm:mb-6">
-          <motion.button
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: cookieScale }}
-            transition={{ type: "spring", stiffness: 300 }}
-            onClick={handleCookieClick}
-            className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48 rounded-full focus:outline-none focus-visible:ring-4 focus-visible:ring-blush focus-visible:ring-offset-4 active:scale-95 transition-transform touch-manipulation select-none"
-            aria-label="Click to bake cookies"
-          >
+           <motion.button
+             animate={{ scale: cookieScale }}
+             transition={{ type: "spring", stiffness: 400, damping: 15 }}
+             onClick={handleCookieClick}
+             className="relative w-36 h-36 sm:w-44 sm:h-44 md:w-48 md:h-48 rounded-full focus:outline-none focus-visible:ring-4 focus-visible:ring-blush focus-visible:ring-offset-4 active:scale-95 transition-transform touch-manipulation select-none"
+             aria-label="Click to bake cookies"
+           >
             {/* Cookie SVG */}
             <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-lg">
               {/* Cookie base */}
