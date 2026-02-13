@@ -25,10 +25,10 @@ export const metadata: Metadata = {
     siteName: "Baking Scrapbook",
     images: [
       {
-        url: "/icon.svg",
+        url: "/opengraph-cookie.svg",
         width: 180,
         height: 180,
-        alt: "Baking Scrapbook App Icon"
+        alt: "Baking Scrapbook - Cookie Icon"
       }
     ],
     locale: "en_US",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Things You Bake, Things I Love",
     description: "A digital baking scrapbook filled with love, memories, and games",
-    images: ["/icon.svg"],
+    images: ["/opengraph-cookie.svg"],
   },
   icons: {
     icon: [
