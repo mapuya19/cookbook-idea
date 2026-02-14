@@ -92,7 +92,6 @@ interface ScrapbookLayoutProps {
 
 export default function ScrapbookLayout({ children }: ScrapbookLayoutProps) {
   const pathname = usePathname();
-  const router = useRouter();
   // Only show loading screen if we haven't loaded once already
   const [isLoading, setIsLoading] = useState(!hasLoadedOnce);
   const navState = useSyncExternalStore(subscribeToNavigation, getNavigationSnapshot, getNavigationSnapshot);
@@ -120,7 +119,7 @@ export default function ScrapbookLayout({ children }: ScrapbookLayoutProps) {
   }, [pathname, navState.prevPath, navState.direction]);
 
   // Use the shared router-based navigation hook
-  const { goToPage, nextPage, prevPage } = useRouterNavigation({
+  const { nextPage, prevPage } = useRouterNavigation({
     pages,
     currentPage,
   });

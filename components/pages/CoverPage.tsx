@@ -141,25 +141,26 @@ export default function CoverPage({ onNext }: CoverPageProps) {
 
   // Handle cookie click for easter egg
   const handleCookieClick = useCallback(() => {
-    if (isAlreadyUnlocked) return; // Already unlocked, no need to track
+    if (isAlreadyUnlocked) return;
     
     playCookieClick();
-    const newCount = cookieClicks + 1;
-    setCookieClicks(newCount);
-    
-    // Unlock at 10 clicks
-    if (newCount >= 10) {
-      playUnlockSound();
-      localStorage.setItem(SECRET_GAME_UNLOCKED_KEY, 'true');
-      setIsAlreadyUnlocked(true);
-      setShowUnlockMessage(true);
+    setCookieClicks(prev => {
+      const newCount = prev + 1;
       
-      // Hide message after 3 seconds
-      setTimeout(() => {
-        setShowUnlockMessage(false);
-      }, 3000);
-    }
-  }, [cookieClicks, isAlreadyUnlocked]);
+      if (newCount >= 10) {
+        playUnlockSound();
+        localStorage.setItem(SECRET_GAME_UNLOCKED_KEY, 'true');
+        setIsAlreadyUnlocked(true);
+        setShowUnlockMessage(true);
+        
+        setTimeout(() => {
+          setShowUnlockMessage(false);
+        }, 3000);
+      }
+      
+      return newCount;
+    });
+  }, [isAlreadyUnlocked]);
 
   // Reduced delay since no intro animation
   const contentDelay = 0.2;

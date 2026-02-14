@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import CoverPage from "./pages/CoverPage";
 import SignatureBakes from "./pages/SignatureBakes";
@@ -65,20 +65,18 @@ const pageTransition = {
 
 export default function Scrapbook() {
   const [isLoading, setIsLoading] = useState(true);
-  const [savedPage, setSavedPage] = useState<number | null>(null);
-
-  // Load saved page from localStorage on mount
-  useEffect(() => {
+  const [savedPage] = useState<number | null>(() => {
     if (typeof window !== 'undefined') {
       const savedPageValue = localStorage.getItem(CURRENT_PAGE_KEY);
       if (savedPageValue !== null) {
         const pageIndex = parseInt(savedPageValue, 10);
         if (!isNaN(pageIndex) && pageIndex >= 0 && pageIndex < pages.length) {
-          setSavedPage(pageIndex);
+          return pageIndex;
         }
       }
     }
-  }, []);
+    return null;
+  });
 
   // Save current page to localStorage whenever it changes
   const handlePageChange = useCallback((pageIndex: number) => {

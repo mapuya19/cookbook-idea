@@ -48,7 +48,13 @@ const getGameDimensions = () => {
 
 export default function CatchGame({ onBack }: CatchGameProps) {
   const [score, setScore] = useState(0);
-  const [highScore, setHighScore] = useState(0);
+  const [highScore, setHighScore] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('catch_game_high_score');
+      return saved ? parseInt(saved, 10) : 0;
+    }
+    return 0;
+  });
   const [lives, setLives] = useState(3);
   const [items, setItems] = useState<FallingItem[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -59,6 +65,7 @@ export default function CatchGame({ onBack }: CatchGameProps) {
   const itemIdRef = useRef(0);
   const animationRef = useRef<number | null>(null);
   const lastSpawnRef = useRef(0);
+  const gameLoopRef = useRef<((timestamp: number) => void) | null>(null);
   const { fireConfetti } = useConfetti();
 
   // Calculate responsive dimensions on mount and resize
@@ -68,32 +75,21 @@ export default function CatchGame({ onBack }: CatchGameProps) {
       setGameDimensions(dims);
       setBasketX(dims.width / 2 - dims.basketWidth / 2);
     };
-    
+
     updateDimensions();
     window.addEventListener('resize', updateDimensions);
     // Also listen for orientation changes on mobile
-    window.addEventListener('orientationchange', () => {
-      // Small delay to let browser finish orientation change
-      setTimeout(updateDimensions, 100);
-    });
+    window.addEventListener('orientationchange', updateDimensions);
+
     return () => {
       window.removeEventListener('resize', updateDimensions);
       window.removeEventListener('orientationchange', updateDimensions);
     };
   }, []);
 
-  // Load high score from localStorage
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('catch_game_high_score');
-      if (saved) setHighScore(parseInt(saved, 10));
-    }
-  }, []);
-
   // Save high score
   useEffect(() => {
     if (score > highScore) {
-      setHighScore(score);
       if (typeof window !== 'undefined') {
         localStorage.setItem('catch_game_high_score', score.toString());
       }
@@ -176,8 +172,10 @@ export default function CatchGame({ onBack }: CatchGameProps) {
       return updated;
     });
 
-    animationRef.current = requestAnimationFrame(gameLoop);
-  }, [isPlaying, spawnItem, basketX, lives, score]);
+    if (gameLoopRef.current) {
+      animationRef.current = requestAnimationFrame(gameLoopRef.current);
+    }
+  }, [isPlaying, spawnItem, basketX, lives, score, gameDimensions]);
 
   // Start game loop
   useEffect(() => {

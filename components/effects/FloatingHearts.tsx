@@ -9,6 +9,10 @@ interface Heart {
   size: number;
   delay: number;
   duration: number;
+  initialRotate: number;
+  finalRotate: number;
+  opacityValues: number[];
+  scaleValues: number[];
 }
 
 interface FloatingHeartsProps {
@@ -29,8 +33,13 @@ export default function FloatingHearts({ isActive }: FloatingHeartsProps) {
           size: 16 + Math.random() * 24,
           delay: Math.random() * 2,
           duration: 3 + Math.random() * 2,
+          initialRotate: -20 + Math.random() * 40,
+          finalRotate: -20 + Math.random() * 40,
+          opacityValues: [0, 1, 1, 0],
+          scaleValues: [0, 1, 1, 0.5],
         });
       }
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setHearts(newHearts);
 
       // Clear hearts after animation
@@ -48,18 +57,18 @@ export default function FloatingHearts({ isActive }: FloatingHeartsProps) {
         {hearts.map((heart) => (
           <motion.div
             key={heart.id}
-            initial={{ 
-              y: "100vh", 
+            initial={{
+              y: "100vh",
               x: `${heart.x}vw`,
               opacity: 0,
               scale: 0,
-              rotate: -20 + Math.random() * 40,
+              rotate: heart.initialRotate,
             }}
-            animate={{ 
+            animate={{
               y: "-20vh",
-              opacity: [0, 1, 1, 0],
-              scale: [0, 1, 1, 0.5],
-              rotate: -20 + Math.random() * 40,
+              opacity: heart.opacityValues,
+              scale: heart.scaleValues,
+              rotate: heart.finalRotate,
             }}
             exit={{ opacity: 0 }}
             transition={{

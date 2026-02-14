@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { useConfetti } from "../effects/Confetti";
 import { playPopSound, playSuccessSound } from "@/utils/sounds";
 
@@ -55,17 +55,12 @@ function createCards(): Card[] {
 }
 
 export default function BakingGame({ onPrev }: BakingGameProps) {
-  const [cards, setCards] = useState<Card[]>([]);
+  const [cards, setCards] = useState<Card[]>(() => createCards());
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
   const [isWon, setIsWon] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const { fireConfetti } = useConfetti();
-
-  // Initialize game
-  useEffect(() => {
-    setCards(createCards());
-  }, []);
 
   const handleCardClick = useCallback((cardId: number) => {
     if (isLocked) return;

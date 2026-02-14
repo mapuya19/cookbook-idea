@@ -22,11 +22,6 @@ const FloatingHeart = ({ delay, x, y, size, rotation }: { delay: number; x: stri
   </div>
 );
 
-interface SignatureBakesProps {
-  onNext: () => void;
-  onPrev: () => void;
-}
-
 const bakes = [
   {
     title: "Matcha Checkerboard Cookies",
@@ -55,14 +50,14 @@ const bakes = [
   {
     title: "Heart Pizza",
     caption: "Proof that love is delicious",
-    expandedCaption: "You turned a simple dinner into one of my favorite memories. That golden crust, the fresh basil... perfect.",
+    expandedCaption: "You turned a simple dinner into one of my favorite memories. That golden crust, fresh basil... perfect.",
     placeholder: "pizza" as const,
     rotation: 5,
     imageSrc: "/images/heart-pizza.jpg",
   },
 ];
 
-export default function SignatureBakes({ onNext }: SignatureBakesProps) {
+export default function SignatureBakes() {
   return (
     <div className="scrapbook-page paper-texture">
       <div className="relative z-10 w-full max-w-5xl mx-auto px-4">
@@ -122,7 +117,7 @@ export default function SignatureBakes({ onNext }: SignatureBakesProps) {
           </svg>
         </motion.div>
 
-        <LoveNoteHeart x="5%" y="20%" delay={2} rotation={-5} />
+        <LoveNoteHeart x="5%" y="20%" delay={0.3} rotation={-5} />
 
         <FloatingHeart delay={0.8} x="8%" y="30%" size={20} rotation={-10} />
         <FloatingHeart delay={1.2} x="85%" y="15%" size={16} rotation={5} />

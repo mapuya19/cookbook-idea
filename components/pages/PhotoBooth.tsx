@@ -889,8 +889,8 @@ export default function PhotoBooth({ onNext }: PhotoBoothProps) {
           🎞️
         </motion.div>
 
-        <LoveNoteHeart x="5%" y="40%" delay={3.5} rotation={10} />
-        <LoveNoteHeart x="90%" y="20%" delay={3.8} rotation={-8} />
+        <LoveNoteHeart x="5%" y="40%" delay={0.3} rotation={10} />
+        <LoveNoteHeart x="90%" y="20%" delay={0.4} rotation={-8} />
 
         <FloatingHeart delay={1.0} x="4%" y="28%" size={18} rotation={-7} />
         <FloatingHeart delay={1.4} x="93%" y="15%" size={20} rotation={9} />

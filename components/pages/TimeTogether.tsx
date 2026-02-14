@@ -24,7 +24,6 @@ const FloatingHeart = ({ delay, x, y, size, rotation }: { delay: number; x: stri
 
 interface TimeTogetherProps {
   onNext: () => void;
-  onPrev: () => void;
 }
 
 const startDate = new Date("2024-06-19T00:00:00");
@@ -36,7 +35,27 @@ interface TimeUnits {
   seconds: number;
 }
 
-export default function TimeTogether({ onNext, onPrev }: TimeTogetherProps) {
+interface TimeCardProps {
+  value: number;
+  label: string;
+}
+
+const TimeCard = ({ value, label }: TimeCardProps) => (
+  <div
+    className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg flex-1 min-w-[100px] sm:min-w-[120px] text-center"
+  >
+    <div
+      className="font-handwritten text-3xl sm:text-4xl md:text-5xl text-blush mb-2"
+    >
+      {value.toLocaleString()}
+    </div>
+    <div className="font-body text-sm sm:text-base text-brown-light">
+      {label}
+    </div>
+  </div>
+);
+
+export default function TimeTogether({ onNext }: TimeTogetherProps) {
   const [timeUnits, setTimeUnits] = useState<TimeUnits>({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
@@ -57,21 +76,6 @@ export default function TimeTogether({ onNext, onPrev }: TimeTogetherProps) {
 
     return () => clearInterval(interval);
   }, []);
-
-  const TimeCard = ({ value, label, delay }: { value: number; label: string; delay: number }) => (
-    <div
-      className="bg-white rounded-2xl p-4 sm:p-6 shadow-lg flex-1 min-w-[100px] sm:min-w-[120px] text-center"
-    >
-      <div
-        className="font-handwritten text-3xl sm:text-4xl md:text-5xl text-blush mb-2"
-      >
-        {value.toLocaleString()}
-      </div>
-      <div className="font-body text-sm sm:text-base text-brown-light">
-        {label}
-      </div>
-    </div>
-  );
 
   return (
     <div className="scrapbook-page paper-texture relative overflow-hidden">
@@ -96,20 +100,11 @@ export default function TimeTogether({ onNext, onPrev }: TimeTogetherProps) {
           transition={{ delay: 0.3 }}
           className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-12"
         >
-          <TimeCard value={timeUnits.days} label="Days" delay={0.4} />
-          <TimeCard value={timeUnits.hours} label="Hours" delay={0.5} />
-          <TimeCard value={timeUnits.minutes} label="Minutes" delay={0.6} />
-          <TimeCard value={timeUnits.seconds} label="Seconds" delay={0.7} />
+          <TimeCard value={timeUnits.days} label="Days" />
+          <TimeCard value={timeUnits.hours} label="Hours" />
+          <TimeCard value={timeUnits.minutes} label="Minutes" />
+          <TimeCard value={timeUnits.seconds} label="Seconds" />
         </motion.div>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="font-handwritten text-xl sm:text-2xl text-brown-light text-center leading-relaxed"
-        >
-          Every minute with you is a gift I treasure forever
-        </motion.p>
 
          <motion.div
            initial={{ opacity: 0 }}
@@ -147,7 +142,7 @@ export default function TimeTogether({ onNext, onPrev }: TimeTogetherProps) {
         💕
       </motion.div>
 
-      <LoveNoteHeart x="75%" y="65%" delay={2.5} rotation={7} />
+      <LoveNoteHeart x="75%" y="65%" delay={0.3} rotation={7} />
 
       <FloatingHeart delay={0.8} x="8%" y="22%" size={19} rotation={-5} />
       <FloatingHeart delay={1.1} x="89%" y="18%" size={17} rotation={8} />

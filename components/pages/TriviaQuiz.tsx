@@ -117,7 +117,7 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
               Quiz Complete! 🎉
             </h2>
             <p className="font-body text-brown-light">
-              Here's how you did
+              Here&apos;s how you did
             </p>
           </div>
 

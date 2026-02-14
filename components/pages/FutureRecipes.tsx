@@ -22,15 +22,10 @@ const FloatingHeart = ({ delay, x, y, size, rotation }: { delay: number; x: stri
   </div>
 );
 
-interface FutureRecipesProps {
-  onNext: () => void;
-  onPrev: () => void;
-}
-
 const futureRecipes = [
   {
     title: "Cinnamoroll cinnamon rolls",
-    description: "As cute as the character, twice as delicious",
+    description: "As cute as character, twice as delicious",
   },
   {
     title: "Mango mochi dessert",
@@ -50,7 +45,7 @@ const futureRecipes = [
   },
 ];
 
-export default function FutureRecipes({ onNext }: FutureRecipesProps) {
+export default function FutureRecipes() {
   return (
     <div className="scrapbook-page paper-texture">
       <div className="relative z-10 w-full max-w-2xl mx-auto px-4">
@@ -126,7 +121,7 @@ export default function FutureRecipes({ onNext }: FutureRecipesProps) {
           </svg>
         </motion.div>
 
-        <LoveNoteHeart x="80%" y="30%" delay={2.5} rotation={-6} />
+        <LoveNoteHeart x="80%" y="30%" delay={0.3} rotation={-6} />
 
         <FloatingHeart delay={0.8} x="7%" y="25%" size={20} rotation={-5} />
         <FloatingHeart delay={1.1} x="90%" y="18%" size={16} rotation={8} />

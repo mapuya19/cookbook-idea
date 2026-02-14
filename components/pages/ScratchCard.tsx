@@ -351,7 +351,7 @@ export default function ScratchCard({ onNext }: ScratchCardProps) {
           💝
         </motion.div>
 
-        <LoveNoteHeart x="15%" y="60%" delay={3} rotation={5} />
+        <LoveNoteHeart x="15%" y="60%" delay={0.3} rotation={5} />
 
         <FloatingHeart delay={0.9} x="6%" y="35%" size={19} rotation={-8} />
         <FloatingHeart delay={1.2} x="91%" y="22%" size={17} rotation={6} />

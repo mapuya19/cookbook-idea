@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import BakingGame from "./BakingGame";
 import CookieClicker from "./CookieClicker";
 import CatchGame from "./CatchGame";
@@ -36,17 +36,13 @@ type GameType = "select" | "memory" | "clicker" | "catch" | "trivia";
 
 export default function GameSelect({ onPrev }: GameSelectProps) {
   const [currentGame, setCurrentGame] = useState<GameType>("select");
-  const [secretUnlocked, setSecretUnlocked] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  // Check if secret game is unlocked
-  useEffect(() => {
+  const [secretUnlocked] = useState(() => {
     if (typeof window !== 'undefined') {
-      const unlocked = localStorage.getItem(SECRET_GAME_UNLOCKED_KEY) === 'true';
-      setSecretUnlocked(unlocked);
-      setMounted(true);
+      return localStorage.getItem(SECRET_GAME_UNLOCKED_KEY) === 'true';
     }
-  }, []);
+    return false;
+  });
+  const [mounted] = useState(() => typeof window !== 'undefined');
 
   if (currentGame === "memory") {
     return <BakingGame onNext={() => setCurrentGame("select")} onPrev={() => setCurrentGame("select")} />;

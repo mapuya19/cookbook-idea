@@ -20,7 +20,6 @@ export interface NavigationOptions {
  */
 export function useScrapbookNavigation(options: NavigationOptions) {
   const { pages, currentPage: initialPage = 0, onPageChange } = options;
-  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [direction, setDirection] = useState(0);
 

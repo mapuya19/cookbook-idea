@@ -22,11 +22,6 @@ const FloatingHeart = ({ delay, x, y, size, rotation }: { delay: number; x: stri
   </div>
 );
 
-interface ThingsILoveProps {
-  onNext: () => void;
-  onPrev: () => void;
-}
-
 const loveNotes = [
   {
     title: "Your eyes",
@@ -37,7 +32,7 @@ const loveNotes = [
   },
   {
     title: "Your thoughtfulness",
-    expandedText: "Somehow I can never seem to keep up with the way you keep everyone's preferences in mind when it comes to gift-giving and overall social cues.",
+    expandedText: "Somehow I can never seem to keep up with way you keep everyone's preferences in mind when it comes to gift-giving and overall social cues.",
     rotation: 4,
     color: "pink" as const,
     size: "md" as const,
@@ -51,14 +46,14 @@ const loveNotes = [
   },
   {
     title: "Your growth",
-    expandedText: "It hasn't been easy for you, but you've stayed strong and resilient throughout it all--I'm proud of the person you've become and can't wait to see where you go next.",
+    expandedText: "It hasn't been easy for you, but you've stayed strong and resilient throughout it all--I'm proud of person you've become and can't wait to see where you go next.",
     rotation: 5,
     color: "white" as const,
     size: "lg" as const,
   },
   {
-    title: "The way you think about the world",
-    expandedText: "I know that I often criticize your worldview, but at the end of the day you're a native New Yorker...that alone can translate into life experiences that most only dream of.",
+    title: "The way you think about world",
+    expandedText: "I know that I often criticize your worldview, but at end of the day you're a native New Yorker...that alone can translate into life experiences that most only dream of.",
     rotation: -4,
     color: "pink" as const,
     size: "md" as const,
@@ -72,7 +67,7 @@ const loveNotes = [
   },
 ];
 
-export default function ThingsILove({ onNext }: ThingsILoveProps) {
+export default function ThingsILove() {
   return (
     <div className="scrapbook-page paper-texture overflow-hidden">
       <div className="relative z-10 w-full max-w-5xl mx-auto px-4">
@@ -149,8 +144,8 @@ export default function ThingsILove({ onNext }: ThingsILoveProps) {
           <span className="text-2xl">🍡</span>
         </motion.div>
 
-        <LoveNoteHeart x="10%" y="15%" delay={2.5} rotation={8} />
-        <LoveNoteHeart x="85%" y="70%" delay={2.8} rotation={-3} />
+        <LoveNoteHeart x="10%" y="15%" delay={0.3} rotation={8} />
+        <LoveNoteHeart x="85%" y="70%" delay={0.4} rotation={-3} />
 
         <FloatingHeart delay={0.9} x="5%" y="40%" size={18} rotation={-7} />
         <FloatingHeart delay={1.3} x="92%" y="25%" size={20} rotation={8} />
