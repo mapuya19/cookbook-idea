@@ -48,7 +48,7 @@ const getGameDimensions = () => {
 
 export default function CatchGame({ onBack }: CatchGameProps) {
   const [score, setScore] = useState(0);
-  const [highScore, setHighScore] = useState(() => {
+  const [highScore] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('catch_game_high_score');
       return saved ? parseInt(saved, 10) : 0;

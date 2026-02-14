@@ -14,14 +14,12 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answeredQuestions, setAnsweredQuestions] = useState<Set<number>>(new Set());
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [showFeedback, setShowFeedback] = useState(false);
-  const [lastAnswerCorrect, setLastAnswerCorrect] = useState(false);
   const [quizFinished, setQuizFinished] = useState(false);
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
   const { fireConfetti } = useConfetti();
 
-  const currentQuestion = TRIVIA_QUESTIONS[currentQuestionIndex];
+  const currentQuestion = useMemo(() => TRIVIA_QUESTIONS[currentQuestionIndex], [currentQuestionIndex]);
   const totalQuestions = TRIVIA_QUESTIONS.length;
   const isAnswered = answeredQuestions.has(currentQuestionIndex);
 
@@ -29,7 +27,7 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
     return ((currentQuestionIndex + (isAnswered ? 1 : 0)) / totalQuestions) * 100;
   }, [currentQuestionIndex, isAnswered, totalQuestions]);
 
-  const correctAnswers = Math.floor((score / 1000) * totalQuestions);
+
 
   const handleAnswer = useCallback((answer: typeof currentQuestion.answers[0]) => {
     if (isAnswered) return;
@@ -38,8 +36,6 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
 
     setSelectedAnswer(answer.id);
     setAnsweredQuestions(prev => new Set([...prev, currentQuestionIndex]));
-    setShowFeedback(true);
-    setLastAnswerCorrect(isCorrect);
 
     if (isCorrect) {
       const streakBonus = streak * 10;
@@ -57,7 +53,6 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
     }
 
     setTimeout(() => {
-      setShowFeedback(false);
       setSelectedAnswer(null);
 
       if (currentQuestionIndex < totalQuestions - 1) {
@@ -70,13 +65,12 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
         }
       }
     }, 2500);
-  }, [isAnswered, currentQuestionIndex, totalQuestions, score, streak, fireConfetti]);
+  }, [isAnswered, currentQuestionIndex, totalQuestions, score, streak, fireConfetti, currentQuestion]);
 
   const restartQuiz = useCallback(() => {
     setCurrentQuestionIndex(0);
     setAnsweredQuestions(new Set());
     setSelectedAnswer(null);
-    setShowFeedback(false);
     setQuizFinished(false);
     setScore(0);
     setStreak(0);
@@ -101,13 +95,10 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
     }
 
     return `${baseClasses} bg-white/50 opacity-50`;
-  }, [isAnswered]);
+  }, [isAnswered, currentQuestion]);
 
   if (quizFinished) {
     const finalScore = Math.round((score / (totalQuestions * 100)) * 100);
-    const actualCorrectAnswers = TRIVIA_QUESTIONS.filter((_, i) =>
-      answeredQuestions.has(i) && currentQuestion.answers
-    ).length;
 
     return (
       <div className="scrapbook-page paper-texture relative overflow-hidden">
@@ -226,7 +217,7 @@ export default function TriviaQuiz({ onBack }: TriviaQuizProps) {
             </h3>
 
             <div className="space-y-3">
-              {currentQuestion.answers.map((answer, index) => (
+              {currentQuestion.answers.map((answer) => (
                 <button
                   key={answer.id}
                   onClick={() => handleAnswer(answer)}

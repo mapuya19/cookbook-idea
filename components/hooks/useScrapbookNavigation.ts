@@ -5,6 +5,7 @@ import { playPageFlip } from "@/utils/sounds";
 export interface Page {
   path?: string;
   name: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   component?: React.ComponentType<any>;
 }
 
@@ -93,7 +94,7 @@ export function useScrapbookNavigation(options: NavigationOptions) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentPage, nextPage, prevPage, goToPage, pages.length]);
+  }, [currentPage, nextPage, prevPage, goToPage, pages.length, onPageChange]);
 
   return {
     currentPage,
@@ -187,7 +188,7 @@ export function useRouterNavigation(options: Omit<NavigationOptions, 'onPageChan
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentPage, nextPage, prevPage, goToPage, pages.length, router]);
+  }, [currentPage, nextPage, prevPage, goToPage, pages, router]);
 
   return {
     currentPage,

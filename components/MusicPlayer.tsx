@@ -47,7 +47,7 @@ export default function MusicPlayer() {
       audio.pause();
       audio.src = "";
     };
-  }, []);
+  }, [volume]);
 
   useEffect(() => {
     if (audioRef.current) {

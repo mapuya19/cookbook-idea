@@ -131,11 +131,14 @@ export default function CoverPage({ onNext }: CoverPageProps) {
   const [showUnlockMessage, setShowUnlockMessage] = useState(false);
   const [isAlreadyUnlocked, setIsAlreadyUnlocked] = useState(false);
 
-  // Check if already unlocked on mount
+  // Check if already unlocked on mount using lazy initialization
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const unlocked = localStorage.getItem(SECRET_GAME_UNLOCKED_KEY) === 'true';
-      setIsAlreadyUnlocked(unlocked);
+      // Use requestAnimationFrame to avoid synchronous setState in effect
+      requestAnimationFrame(() => {
+        setIsAlreadyUnlocked(unlocked);
+      });
     }
   }, []);
 

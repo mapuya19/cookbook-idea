@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     siteName: "Baking Scrapbook",
     images: [
       {
-        url: "/opengraph.svg",
+        url: "/opengraph-image.png",
         width: 1200,
         height: 630,
         alt: "Things You Bake, Things I Love - A digital baking scrapbook with cookies, games, and love"
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Baking Scrapbook - Things You Bake, Things I Love",
     description: "A digital baking scrapbook filled with love, memories, and games for Valentine's Day. Bake cookies, play games, and celebrate love together!",
-    images: ["/opengraph.svg"],
+    images: ["/opengraph-image.png"],
   },
   icons: {
     icon: [
