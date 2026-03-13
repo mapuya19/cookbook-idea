@@ -129,7 +129,6 @@ export default function Scrapbook() {
         pages={pages}
         currentPage={currentPage}
         onGoToPage={goToPage}
-        useRouter={false}
       />
 
       {/* Page Content */}

@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
-import Image from "next/image";
 
 interface PolaroidProps {
   imageSrc?: string;
@@ -135,11 +134,10 @@ export default function Polaroid({
       {/* Image area */}
       <div className="relative w-full aspect-square bg-cream overflow-hidden">
         {showImage ? (
-          <Image
+          <img
             src={imageSrc}
             alt={title}
-            fill
-            className="object-cover"
+            className="object-cover w-full h-full"
             onError={() => setImageError(true)}
           />
         ) : (

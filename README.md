@@ -11,7 +11,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3002](http://localhost:3002) to see the scrapbook.
+Open [http://localhost:5173](http://localhost:5173) to see the scrapbook.
 
 ### Photos
 
@@ -59,8 +59,9 @@ Follow the prompts to deploy.
 
 ## Tech Stack
 
-- Next.js 16 (App Router)
+- Vite 8
 - React 19
+- TypeScript
 - Tailwind CSS 4
 - Framer Motion
 - canvas-confetti

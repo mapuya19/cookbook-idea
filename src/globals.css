@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Gamja+Flower&family=Quicksand:wght@300;400;500;600;700&display=swap');
+
 :root {
   /* Matcha theme - soft greens with warm cream undertones */
   --cream: #F5F5F0;
@@ -19,6 +22,10 @@
   /* Legacy aliases for compatibility */
   --blush-pink: var(--matcha);
   --blush-pink-light: var(--matcha-light);
+  
+  /* Google Fonts */
+  --font-gamja: 'Gamja Flower', cursive;
+  --font-quicksand: 'Quicksand', sans-serif;
   
   --background: var(--cream);
   --foreground: var(--soft-brown);
