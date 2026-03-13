@@ -65,6 +65,12 @@ Follow the prompts to deploy.
 - Tailwind CSS 4
 - Framer Motion
 - canvas-confetti
+- ESLint 10
+
+## Requirements
+
+- Node.js 20.19+ or 24+
+- npm 9+
 
 ---
 

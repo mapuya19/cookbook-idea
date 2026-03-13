@@ -39,7 +39,6 @@ export default function FloatingHearts({ isActive }: FloatingHeartsProps) {
           scaleValues: [0, 1, 1, 0.5],
         });
       }
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setHearts(newHearts);
 
       // Clear hearts after animation

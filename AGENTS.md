@@ -12,6 +12,20 @@ bd close <id>         # Complete work
 bd sync               # Sync with git
 ```
 
+## Dependency Management
+
+When updating dependencies:
+
+```bash
+npm audit              # Check for vulnerabilities
+npm outdated           # Check for outdated packages
+npm update <pkg>       # Update specific packages
+npm install <pkg>@latest  # Install latest version
+```
+
+**Security:** Always run `npm audit` and fix vulnerabilities before committing.
+**ESLint:** This project uses ESLint 10.x - follow migration guides for major version upgrades.
+
 ## Landing the Plane (Session Completion)
 
 **When ending a work session**, you MUST complete ALL steps below. Work is NOT complete until `git push` succeeds.
